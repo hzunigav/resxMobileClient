@@ -1,0 +1,111 @@
+<ion-content class="auth-page">
+  <div class="auth-container">
+    <!-- Language Toggle -->
+    <div class="language-toggle">
+      <ion-button fill="clear" size="small" (click)="toggleLanguage()">
+        <ion-icon slot="start" name="language"></ion-icon>
+        {{ currentLanguage === 'en' ? 'ES' : 'EN' }}
+      </ion-button>
+    </div>
+
+    <!-- Logo/Brand Section -->
+    <div class="brand-section">
+      <div class="brand-icon">
+        <ion-icon name="restaurant"></ion-icon>
+      </div>
+      <h1 class="brand-title">ResXperience</h1>
+      <p class="brand-subtitle">{{ 'AUTH.WELCOME' | translate }}</p>
+    </div>
+
+    <!-- Auth Form Card -->
+    <div class="glass-card auth-card">
+      <!-- Mode Toggle Buttons -->
+      <div class="mode-toggle">
+        <ion-segment [(ngModel)]="authMode" mode="ios">
+          <ion-segment-button value="login">
+            <ion-label>{{ 'AUTH.LOGIN' | translate }}</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="register">
+            <ion-label>{{ 'AUTH.REGISTER' | translate }}</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
+      <!-- Auth Form -->
+      <form (ngSubmit)="onSubmit()" class="auth-form">
+        <!-- Register-only fields -->
+        <div *ngIf="authMode === 'register'" class="name-fields">
+          <ion-item lines="none" class="input-item">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-input
+              type="text"
+              [(ngModel)]="firstName"
+              name="firstName"
+              [placeholder]="'AUTH.FIRST_NAME' | translate"
+              required
+            ></ion-input>
+          </ion-item>
+
+          <ion-item lines="none" class="input-item">
+            <ion-icon name="person-outline" slot="start"></ion-icon>
+            <ion-input
+              type="text"
+              [(ngModel)]="lastName"
+              name="lastName"
+              [placeholder]="'AUTH.LAST_NAME' | translate"
+              required
+            ></ion-input>
+          </ion-item>
+        </div>
+
+        <!-- Email field -->
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="mail-outline" slot="start"></ion-icon>
+          <ion-input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            [placeholder]="'AUTH.EMAIL' | translate"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <!-- Password field -->
+        <ion-item lines="none" class="input-item">
+          <ion-icon name="lock-closed-outline" slot="start"></ion-icon>
+          <ion-input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            [placeholder]="'AUTH.PASSWORD' | translate"
+            required
+          ></ion-input>
+        </ion-item>
+
+        <!-- Remember Me (Login only) -->
+        <div *ngIf="authMode === 'login'" class="remember-me">
+          <ion-checkbox [(ngModel)]="rememberMe" name="rememberMe"></ion-checkbox>
+          <ion-label>{{ 'AUTH.REMEMBER_ME' | translate }}</ion-label>
+        </div>
+
+        <!-- Submit Button -->
+        <ion-button expand="block" type="submit" class="submit-button" color="primary">
+          <span *ngIf="authMode === 'login'">{{ 'AUTH.LOGIN_BUTTON' | translate }}</span>
+          <span *ngIf="authMode === 'register'">{{ 'AUTH.REGISTER_BUTTON' | translate }}</span>
+        </ion-button>
+      </form>
+
+      <!-- Toggle Mode Link -->
+      <div class="toggle-mode-link">
+        <p *ngIf="authMode === 'login'">
+          {{ 'AUTH.NO_ACCOUNT' | translate }}
+          <a (click)="toggleAuthMode()">{{ 'AUTH.REGISTER_LINK' | translate }}</a>
+        </p>
+        <p *ngIf="authMode === 'register'">
+          {{ 'AUTH.HAVE_ACCOUNT' | translate }}
+          <a (click)="toggleAuthMode()">{{ 'AUTH.LOGIN_LINK' | translate }}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</ion-content>

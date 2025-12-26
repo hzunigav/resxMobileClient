@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button (click)="goBack()" defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ 'SERVICE_CHAT.TITLE' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openMenu()">
+        <ion-icon slot="icon-only" name="restaurant"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content #content class="service-chat-content">
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>{{ 'SERVICE_CHAT.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Chat Timeline -->
+  <div *ngIf="!isLoading" class="chat-timeline">
+    <!-- Welcome Message -->
+    <div class="system-message">
+      <p>{{ 'SERVICE_CHAT.WELCOME' | translate }}</p>
+      <p class="table-info" *ngIf="service">
+        {{ 'SERVICE_CHAT.TABLE' | translate }} {{ service.tableId }}
+      </p>
+    </div>
+
+    <!-- Messages -->
+    <div *ngFor="let message of messages" [class.customer-message]="isCustomerMessage(message)"
+      [class.server-message]="!isCustomerMessage(message)" class="message-wrapper">
+      <div class="message-bubble">
+        <p class="message-content">{{ message.content }}</p>
+        <span class="message-time">{{ getMessageTime(message) }}</span>
+      </div>
+    </div>
+
+    <!-- Order Cards embedded in chat -->
+    <div *ngFor="let order of orders" class="order-card-wrapper">
+      <div class="order-card">
+        <div class="order-header">
+          <div class="order-info">
+            <ion-icon name="receipt"></ion-icon>
+            <strong>{{ 'SERVICE_CHAT.ORDER' | translate }} #{{ order.orderNumber }}</strong>
+          </div>
+          <ion-badge [color]="getOrderStatus(order) === 'DELIVERED' ? 'success' :
+                              getOrderStatus(order) === 'REJECTED' ? 'danger' :
+                              'warning'">
+            {{ 'SERVICE_CHAT.STATUS_' + getOrderStatus(order) | translate }}
+          </ion-badge>
+        </div>
+        <div class="order-items">
+          <p class="order-total">${{ order.totalPrice?.toFixed(2) }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<!-- Message Input Footer -->
+<ion-footer>
+  <ion-toolbar class="message-input-toolbar">
+    <ion-item lines="none" class="message-input-item">
+      <ion-input [(ngModel)]="newMessage" [placeholder]="'SERVICE_CHAT.TYPE_MESSAGE' | translate" (keyup.enter)="sendMessage()"
+        type="text"></ion-input>
+      <ion-button slot="end" (click)="sendMessage()" [disabled]="!newMessage.trim()" fill="clear" color="primary">
+        <ion-icon slot="icon-only" name="send"></ion-icon>
+      </ion-button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>

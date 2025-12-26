@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Table</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="fixed">ID</ion-label>
+      <div item-content>
+        <span id="id-content">{{ table.id }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Table Number</ion-label>
+      <div item-content>
+        <span id="tableNumber-content">{{ table.tableNumber }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Capacity</ion-label>
+      <div item-content>
+        <span id="capacity-content">{{ table.capacity }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Qr Code Url</ion-label>
+      <div item-content>
+        <span id="qrCodeUrl-content">{{ table.qrCodeUrl }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Qr Token</ion-label>
+      <div item-content>
+        <span id="qrToken-content">{{ table.qrToken }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Active</ion-label>
+      <div item-content>
+        <span id="active-content">{{ table.active }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label>Restaurant</ion-label>
+      @if (table.restaurantId) {
+        <div item-content>
+          <a>{{ table.restaurantundefined }}</a>
+        </div>
+      }
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" (click)="open(table)">{{ 'EDIT_BUTTON' | translate }}</ion-button>
+  <ion-button expand="block" color="danger" (click)="deleteModal(table)">{{ 'DELETE_BUTTON' | translate }}</ion-button>
+</ion-content>

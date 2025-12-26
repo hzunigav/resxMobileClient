@@ -1,0 +1,7 @@
+{
+  "name": "resxperienceIonic",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,58 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Restaurants</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- todo: add elasticsearch support -->
+<ion-content class="ion-padding">
+  <ion-refresher [disabled]="plt.is('desktop')" slot="fixed" (ionRefresh)="loadAll($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    @for (restaurant of restaurants; track trackId($index, restaurant)) {
+      <ion-item-sliding #slidingItem>
+        <ion-item (click)="view(restaurant)">
+          <ion-label text-wrap>
+            <p>{{ restaurant.id }}</p>
+            <ion-text color="primary"
+              ><h2>{{ restaurant.name }}</h2></ion-text
+            >
+            <p>{{ restaurant.slug }}</p>
+            <p>{{ restaurant.description }}</p>
+            <p>{{ restaurant.address }}</p>
+            <p>{{ restaurant.phone }}</p>
+            <p>{{ restaurant.email }}</p>
+            <p>{{ restaurant.active }}</p>
+            <p>{{ restaurant.logoUrl }}</p>
+            <p>{{ restaurant.createdDate | date: 'medium' }}</p>
+            <p>{{ restaurant.lastModifiedDate | date: 'medium' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="edit(slidingItem, restaurant)">
+            {{ 'EDIT_BUTTON' | translate }}
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="delete(restaurant)">
+            {{ 'DELETE_BUTTON' | translate }}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    }
+  </ion-list>
+  @if (!restaurants?.length) {
+    <ion-item>
+      <ion-label> No Restaurants found. </ion-label>
+    </ion-item>
+  }
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="new()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

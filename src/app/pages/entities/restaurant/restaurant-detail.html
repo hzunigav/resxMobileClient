@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Restaurant</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="fixed">ID</ion-label>
+      <div item-content>
+        <span id="id-content">{{ restaurant.id }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Name</ion-label>
+      <div item-content>
+        <span id="name-content">{{ restaurant.name }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Slug</ion-label>
+      <div item-content>
+        <span id="slug-content">{{ restaurant.slug }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Description</ion-label>
+      <div item-content>
+        <span id="description-content">{{ restaurant.description }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Address</ion-label>
+      <div item-content>
+        <span id="address-content">{{ restaurant.address }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Phone</ion-label>
+      <div item-content>
+        <span id="phone-content">{{ restaurant.phone }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Email</ion-label>
+      <div item-content>
+        <span id="email-content">{{ restaurant.email }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Active</ion-label>
+      <div item-content>
+        <span id="active-content">{{ restaurant.active }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Logo Url</ion-label>
+      <div item-content>
+        <span id="logoUrl-content">{{ restaurant.logoUrl }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Created Date</ion-label>
+      <div item-content>
+        <span id="createdDate-content">{{ restaurant.createdDate | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Last Modified Date</ion-label>
+      <div item-content>
+        <span id="lastModifiedDate-content">{{ restaurant.lastModifiedDate | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label>Tenant</ion-label>
+      @if (restaurant.tenantId) {
+        <div item-content>
+          <a>{{ restaurant.tenantundefined }}</a>
+        </div>
+      }
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" (click)="open(restaurant)">{{ 'EDIT_BUTTON' | translate }}</ion-button>
+  <ion-button expand="block" color="danger" (click)="deleteModal(restaurant)">{{ 'DELETE_BUTTON' | translate }}</ion-button>
+</ion-content>

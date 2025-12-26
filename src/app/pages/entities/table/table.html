@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tables</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- todo: add elasticsearch support -->
+<ion-content class="ion-padding">
+  <ion-refresher [disabled]="plt.is('desktop')" slot="fixed" (ionRefresh)="loadAll($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    @for (table of tables; track trackId($index, table)) {
+      <ion-item-sliding #slidingItem>
+        <ion-item (click)="view(table)">
+          <ion-label text-wrap>
+            <p>{{ table.id }}</p>
+            <p>{{ table.tableNumber }}</p>
+            <p>{{ table.capacity }}</p>
+            <p>{{ table.qrCodeUrl }}</p>
+            <p>{{ table.qrToken }}</p>
+            <p>{{ table.active }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="edit(slidingItem, table)">
+            {{ 'EDIT_BUTTON' | translate }}
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="delete(table)">
+            {{ 'DELETE_BUTTON' | translate }}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    }
+  </ion-list>
+  @if (!tables?.length) {
+    <ion-item>
+      <ion-label> No Tables found. </ion-label>
+    </ion-item>
+  }
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="new()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>

@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Service</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!isReadyToSave" (click)="save()" color="primary">
+        @if (platform.is('ios')) {
+          <span>{{ 'DONE_BUTTON' | translate }}</span>
+        } @else {
+          <ion-icon name="checkmark"></ion-icon>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (form) {
+    <form name="form" [formGroup]="form" (ngSubmit)="save()">
+      <ion-list>
+        <ion-item [hidden]="!form.id">
+          <ion-label>ID</ion-label>
+          <ion-input type="hidden" id="id" formControlName="id" readonly></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Status</ion-label>
+          <ion-select formControlName="status" id="field_status" required>
+            <ion-select-option value="INITIATED">{{ 'ServiceStatus.INITIATED' | translate }}</ion-select-option>
+            <ion-select-option value="ACTIVE">{{ 'ServiceStatus.ACTIVE' | translate }}</ion-select-option>
+            <ion-select-option value="COMPLETED">{{ 'ServiceStatus.COMPLETED' | translate }}</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label>Initiated At</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" formControlName="initiatedAt" id="field_initiatedAt"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Acknowledged At</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" formControlName="acknowledgedAt" id="field_acknowledgedAt"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Completed At</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" formControlName="completedAt" id="field_completedAt"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Restaurant</ion-label>
+          <ion-select id="field_restaurant" formControlName="restaurantId" [compareWith]="compareRestaurant" required>
+            @if (!form.value.restaurantId) {
+              <ion-select-option [value]="null" selected></ion-select-option>
+            }
+            @for (restaurantOption of restaurants; track trackRestaurantById($index, restaurantOption)) {
+              <ion-select-option [value]="restaurantOption.id">{{ restaurantOption.name }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <div [hidden]="!(form.controls['restaurantId']?.dirty && form.controls['restaurantId']?.invalid)">
+          <small [hidden]="!form.controls['restaurantId']?.errors?.required"> This field is required. </small>
+        </div>
+        <ion-item>
+          <ion-label>Table</ion-label>
+          <ion-select id="field_table" formControlName="tableId" [compareWith]="compareTable" required>
+            @if (!form.value.tableId) {
+              <ion-select-option [value]="null" selected></ion-select-option>
+            }
+            @for (tableOption of tables; track trackTableById($index, tableOption)) {
+              <ion-select-option [value]="tableOption.id">{{ tableOption.tableNumber }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <div [hidden]="!(form.controls['tableId']?.dirty && form.controls['tableId']?.invalid)">
+          <small [hidden]="!form.controls['tableId']?.errors?.required"> This field is required. </small>
+        </div>
+        <ion-item>
+          <ion-label>Customer</ion-label>
+          <ion-select id="field_customer" formControlName="customerId" [compareWith]="compareUser" required>
+            @if (!form.value.customerId) {
+              <ion-select-option [value]="null" selected></ion-select-option>
+            }
+            @for (userOption of users; track trackUserById($index, userOption)) {
+              <ion-select-option [value]="userOption.id">{{ userOption.login }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <div [hidden]="!(form.controls['customerId']?.dirty && form.controls['customerId']?.invalid)">
+          <small [hidden]="!form.controls['customerId']?.errors?.required"> This field is required. </small>
+        </div>
+        <ion-item>
+          <ion-label>Server</ion-label>
+          <ion-select id="field_server" formControlName="serverId" [compareWith]="compareUser">
+            <ion-select-option [value]="null"></ion-select-option>
+            @for (userOption of users; track trackUserById($index, userOption)) {
+              <ion-select-option [value]="userOption.id">{{ userOption.login }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+      </ion-list>
+    </form>
+  }
+</ion-content>

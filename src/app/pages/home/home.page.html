@@ -1,0 +1,115 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>ResXperience</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()" id="logout">
+        <ion-icon slot="icon-only" name="log-out"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="home-page">
+  <!-- Offline Indicator -->
+  <div *ngIf="!isOnline" class="offline-banner">
+    <ion-icon name="cloud-offline"></ion-icon>
+    <span>{{ 'HOME.OFFLINE' | translate }}</span>
+  </div>
+
+  <div class="home-container">
+    <!-- User Greeting -->
+    <div class="greeting-section">
+      <div class="avatar">
+        <ion-icon name="person-circle"></ion-icon>
+      </div>
+      <h1 class="greeting-title">{{ 'HOME.WELCOME' | translate }}, {{ account?.firstName }}!</h1>
+      <p class="greeting-subtitle">{{ 'HOME.SUBTITLE' | translate }}</p>
+    </div>
+
+    <!-- QR Scanner Section -->
+    <div class="scanner-section">
+      <div class="scan-card">
+        <div class="scan-icon">
+          <ion-icon name="qr-code"></ion-icon>
+        </div>
+
+        <h2 class="scan-title">{{ 'HOME.SCAN_TITLE' | translate }}</h2>
+        <p class="scan-description">{{ 'HOME.SCAN_DESCRIPTION' | translate }}</p>
+
+        <!-- Scan Button -->
+        <ion-button
+          expand="block"
+          size="large"
+          class="scan-button"
+          (click)="scanQRCode()"
+          [disabled]="!isOnline || isScanning"
+        >
+          <ion-icon slot="start" [name]="isScanning ? 'hourglass' : 'camera'"></ion-icon>
+          <span *ngIf="!isScanning">{{ 'HOME.SCAN_BUTTON' | translate }}</span>
+          <span *ngIf="isScanning">{{ 'HOME.SCANNING' | translate }}</span>
+        </ion-button>
+
+        <!-- Manual Entry Link -->
+        <div class="manual-entry">
+          <a (click)="enterCodeManually()" [class.disabled]="!isOnline">
+            {{ 'HOME.MANUAL_ENTRY' | translate }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="instructions-section">
+      <div class="instruction-item">
+        <div class="instruction-icon">
+          <ion-icon name="qr-code-outline"></ion-icon>
+        </div>
+        <div class="instruction-text">
+          <h3>{{ 'HOME.STEP1_TITLE' | translate }}</h3>
+          <p>{{ 'HOME.STEP1_DESC' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="instruction-item">
+        <div class="instruction-icon">
+          <ion-icon name="chatbubbles-outline"></ion-icon>
+        </div>
+        <div class="instruction-text">
+          <h3>{{ 'HOME.STEP2_TITLE' | translate }}</h3>
+          <p>{{ 'HOME.STEP2_DESC' | translate }}</p>
+        </div>
+      </div>
+
+      <div class="instruction-item">
+        <div class="instruction-icon">
+          <ion-icon name="restaurant-outline"></ion-icon>
+        </div>
+        <div class="instruction-text">
+          <h3>{{ 'HOME.STEP3_TITLE' | translate }}</h3>
+          <p>{{ 'HOME.STEP3_DESC' | translate }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Service Resume Banner (Sticky Bottom) -->
+  <div *ngIf="activeService" class="active-service-banner">
+    <div class="banner-content">
+      <div class="banner-info">
+        <ion-icon name="timer"></ion-icon>
+        <div class="banner-text">
+          <strong>{{ 'HOME.ACTIVE_SERVICE' | translate }}</strong>
+          <p>{{ 'HOME.SERVICE_TABLE' | translate }} {{ activeService.tableId }}</p>
+        </div>
+      </div>
+      <div class="banner-actions">
+        <ion-button size="small" (click)="resumeService()" color="primary">
+          {{ 'HOME.RESUME' | translate }}
+        </ion-button>
+        <ion-button size="small" fill="clear" (click)="endService()" color="danger">
+          <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </div>
+</ion-content>

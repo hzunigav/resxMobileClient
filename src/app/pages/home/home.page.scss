@@ -1,0 +1,328 @@
+.home-page {
+  --background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+
+  .offline-banner {
+    background: #f59e0b;
+    color: white;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+
+    ion-icon {
+      font-size: 20px;
+    }
+  }
+
+  .home-container {
+    padding: 1.5rem;
+    padding-bottom: 6rem;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  // User Greeting Section
+  .greeting-section {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .avatar {
+      margin: 0 auto 1rem;
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      ion-icon {
+        font-size: 80px;
+        color: #10b981;
+      }
+    }
+
+    .greeting-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 0 0 0.5rem;
+    }
+
+    .greeting-subtitle {
+      font-size: 1rem;
+      color: #64748b;
+      margin: 0;
+    }
+  }
+
+  // QR Scanner Section
+  .scanner-section {
+    margin-bottom: 2rem;
+
+    .scan-card {
+      background: white;
+      border-radius: 24px;
+      padding: 2rem;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      text-align: center;
+
+      .scan-icon {
+        width: 100px;
+        height: 100px;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+
+        ion-icon {
+          font-size: 56px;
+          color: white;
+        }
+      }
+
+      .scan-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 0.5rem;
+      }
+
+      .scan-description {
+        font-size: 0.95rem;
+        color: #64748b;
+        margin: 0 0 1.5rem;
+        line-height: 1.5;
+      }
+
+      .scan-button {
+        --background: #10b981;
+        --background-hover: #059669;
+        --background-activated: #047857;
+        --border-radius: 14px;
+        --box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        height: 56px;
+        font-weight: 600;
+        font-size: 16px;
+        text-transform: none;
+        letter-spacing: 0.3px;
+        margin-bottom: 1rem;
+
+        &[disabled] {
+          --background: #cbd5e1;
+          --box-shadow: none;
+          opacity: 0.6;
+        }
+
+        ion-icon {
+          font-size: 22px;
+        }
+      }
+
+      .manual-entry {
+        padding-top: 0.5rem;
+
+        a {
+          color: #10b981;
+          font-weight: 600;
+          font-size: 14px;
+          text-decoration: none;
+          cursor: pointer;
+          transition: color 0.2s ease;
+
+          &:hover {
+            color: #059669;
+            text-decoration: underline;
+          }
+
+          &.disabled {
+            color: #cbd5e1;
+            cursor: not-allowed;
+            pointer-events: none;
+          }
+        }
+      }
+    }
+  }
+
+  // Instructions Section
+  .instructions-section {
+    .instruction-item {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding: 1.25rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+
+      .instruction-icon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        background: rgba(16, 185, 129, 0.1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        ion-icon {
+          font-size: 24px;
+          color: #10b981;
+        }
+      }
+
+      .instruction-text {
+        flex: 1;
+
+        h3 {
+          font-size: 1rem;
+          font-weight: 600;
+          color: #1e293b;
+          margin: 0 0 0.25rem;
+        }
+
+        p {
+          font-size: 0.875rem;
+          color: #64748b;
+          margin: 0;
+          line-height: 1.4;
+        }
+      }
+    }
+  }
+
+  // Active Service Banner (Sticky Bottom)
+  .active-service-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    padding: 1rem;
+    z-index: 10;
+    animation: slideUp 0.3s ease;
+
+    .banner-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+
+      .banner-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex: 1;
+
+        > ion-icon {
+          font-size: 32px;
+          color: #10b981;
+          flex-shrink: 0;
+        }
+
+        .banner-text {
+          strong {
+            display: block;
+            font-size: 0.875rem;
+            color: #1e293b;
+            margin-bottom: 0.125rem;
+          }
+
+          p {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin: 0;
+          }
+        }
+      }
+
+      .banner-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        ion-button {
+          --padding-start: 1rem;
+          --padding-end: 1rem;
+          height: 36px;
+          font-weight: 600;
+          font-size: 13px;
+          text-transform: none;
+
+          &[fill='clear'] {
+            --padding-start: 0.5rem;
+            --padding-end: 0.5rem;
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 375px) {
+  .home-page {
+    .home-container {
+      padding: 1rem;
+    }
+
+    .greeting-section {
+      .greeting-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    .scanner-section {
+      .scan-card {
+        padding: 1.5rem;
+
+        .scan-icon {
+          width: 80px;
+          height: 80px;
+
+          ion-icon {
+            font-size: 44px;
+          }
+        }
+      }
+    }
+
+    .active-service-banner {
+      .banner-content {
+        flex-direction: column;
+        align-items: stretch;
+
+        .banner-actions {
+          justify-content: space-between;
+        }
+      }
+    }
+  }
+}

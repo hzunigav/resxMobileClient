@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'ORDER_CONFIRMATION.TITLE' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Order Review Section -->
+  <div class="section-header">
+    <h2>{{ 'ORDER_CONFIRMATION.REVIEW_TITLE' | translate }}</h2>
+  </div>
+
+  <!-- Cart Items Summary -->
+  <ion-list class="order-items-list">
+    <ion-item *ngFor="let item of cartItems" lines="full">
+      <div class="item-details">
+        <div class="item-header">
+          <h3 class="item-name">{{ item.menuItem.name }}</h3>
+          <span class="item-total">${{ item.subtotal.toFixed(2) }}</span>
+        </div>
+
+        <!-- Size and Quantity -->
+        <p class="item-meta">
+          <span *ngIf="item.menuItemSizeName">{{ item.menuItemSizeName }} • </span>
+          Qty: {{ item.quantity }} @ ${{ item.unitPrice.toFixed(2) }}
+        </p>
+
+        <!-- Special Instructions -->
+        <p class="item-instructions" *ngIf="item.specialInstructions">
+          <ion-icon name="chatbox-outline" class="instructions-icon"></ion-icon>
+          {{ item.specialInstructions }}
+        </p>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Special Instructions for Entire Order -->
+  <div class="order-instructions-section">
+    <ion-item lines="full">
+      <ion-label position="stacked">
+        {{ 'ORDER_CONFIRMATION.ORDER_INSTRUCTIONS' | translate }}
+      </ion-label>
+      <ion-textarea
+        [(ngModel)]="orderSpecialInstructions"
+        [placeholder]="'ORDER_CONFIRMATION.ORDER_INSTRUCTIONS_PLACEHOLDER' | translate"
+        rows="3"
+        maxlength="500"
+      ></ion-textarea>
+    </ion-item>
+  </div>
+
+  <!-- Order Summary -->
+  <div class="order-summary">
+    <ion-card>
+      <ion-card-content>
+        <div class="summary-row">
+          <span class="summary-label">{{ 'ORDER_CONFIRMATION.SUBTOTAL' | translate }}</span>
+          <span class="summary-value">${{ cartSummary.subtotal.toFixed(2) }}</span>
+        </div>
+        <div class="summary-row">
+          <span class="summary-label">{{ 'ORDER_CONFIRMATION.TAX' | translate }} (8%)</span>
+          <span class="summary-value">${{ cartSummary.tax.toFixed(2) }}</span>
+        </div>
+        <ion-item lines="none" class="summary-total">
+          <ion-label>
+            <h2>{{ 'ORDER_CONFIRMATION.TOTAL' | translate }}</h2>
+          </ion-label>
+          <ion-note slot="end" class="total-amount">${{ cartSummary.total.toFixed(2) }}</ion-note>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Info Message -->
+  <ion-card class="info-card">
+    <ion-card-content>
+      <div class="info-content">
+        <ion-icon name="information-circle-outline" color="primary"></ion-icon>
+        <p>{{ 'ORDER_CONFIRMATION.INFO_MESSAGE' | translate }}</p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<!-- Place Order Button (Fixed at Bottom) -->
+<ion-footer>
+  <ion-toolbar>
+    <ion-button
+      expand="block"
+      size="large"
+      (click)="placeOrder()"
+      [disabled]="isSubmitting || cartItems.length === 0"
+      class="place-order-button"
+    >
+      <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
+      {{ 'ORDER_CONFIRMATION.PLACE_ORDER' | translate }}
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

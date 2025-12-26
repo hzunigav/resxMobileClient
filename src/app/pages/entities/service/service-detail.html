@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Service</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="fixed">ID</ion-label>
+      <div item-content>
+        <span id="id-content">{{ service.id }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Status</ion-label>
+      <div item-content>
+        <span id="status-content">{{ service.status }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Initiated At</ion-label>
+      <div item-content>
+        <span id="initiatedAt-content">{{ service.initiatedAt | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Acknowledged At</ion-label>
+      <div item-content>
+        <span id="acknowledgedAt-content">{{ service.acknowledgedAt | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Completed At</ion-label>
+      <div item-content>
+        <span id="completedAt-content">{{ service.completedAt | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label>Restaurant</ion-label>
+      @if (service.restaurantId) {
+        <div item-content>
+          <a>{{ service.restaurantundefined }}</a>
+        </div>
+      }
+    </ion-item>
+    <ion-item>
+      <ion-label>Table</ion-label>
+      @if (service.tableId) {
+        <div item-content>
+          <a>{{ service.tableundefined }}</a>
+        </div>
+      }
+    </ion-item>
+    <ion-item>
+      <ion-label>Customer</ion-label>
+      <div item-content>{{ service.customerundefined }}</div>
+    </ion-item>
+    <ion-item>
+      <ion-label>Server</ion-label>
+      <div item-content>{{ service.serverundefined }}</div>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" (click)="open(service)">{{ 'EDIT_BUTTON' | translate }}</ion-button>
+  <ion-button expand="block" color="danger" (click)="deleteModal(service)">{{ 'DELETE_BUTTON' | translate }}</ion-button>
+</ion-content>

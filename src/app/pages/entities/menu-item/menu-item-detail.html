@@ -1,0 +1,102 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Menu Item</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="fixed">ID</ion-label>
+      <div item-content>
+        <span id="id-content">{{ menuItem.id }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Name</ion-label>
+      <div item-content>
+        <span id="name-content">{{ menuItem.name }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Description</ion-label>
+      <div item-content>
+        <span id="description-content">{{ menuItem.description }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Base Price</ion-label>
+      <div item-content>
+        <span id="basePrice-content">{{ menuItem.basePrice }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Image Url</ion-label>
+      <div item-content>
+        <span id="imageUrl-content">{{ menuItem.imageUrl }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Active</ion-label>
+      <div item-content>
+        <span id="active-content">{{ menuItem.active }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Featured</ion-label>
+      <div item-content>
+        <span id="featured-content">{{ menuItem.featured }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Available For Breakfast</ion-label>
+      <div item-content>
+        <span id="availableForBreakfast-content">{{ menuItem.availableForBreakfast }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Available For Lunch</ion-label>
+      <div item-content>
+        <span id="availableForLunch-content">{{ menuItem.availableForLunch }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Available For Dinner</ion-label>
+      <div item-content>
+        <span id="availableForDinner-content">{{ menuItem.availableForDinner }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Display Order</ion-label>
+      <div item-content>
+        <span id="displayOrder-content">{{ menuItem.displayOrder }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Created Date</ion-label>
+      <div item-content>
+        <span id="createdDate-content">{{ menuItem.createdDate | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Last Modified Date</ion-label>
+      <div item-content>
+        <span id="lastModifiedDate-content">{{ menuItem.lastModifiedDate | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label>Category</ion-label>
+      @if (menuItem.categoryId) {
+        <div item-content>
+          <a>{{ menuItem.categoryundefined }}</a>
+        </div>
+      }
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" (click)="open(menuItem)">{{ 'EDIT_BUTTON' | translate }}</ion-button>
+  <ion-button expand="block" color="danger" (click)="deleteModal(menuItem)">{{ 'DELETE_BUTTON' | translate }}</ion-button>
+</ion-content>

@@ -1,0 +1,71 @@
+{
+  "annotations": {
+    "changelogDate": "20251215144644"
+  },
+  "applications": "*",
+  "documentation": "Service entity - Tracks customer sessions from QR scan to closure\\nCore entity for the service lifecycle workflow",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "status",
+      "fieldType": "ServiceStatus",
+      "fieldTypeDocumentation": "Epic 3: Service & Chat\\nEntities: Service, Table, ChatMessage\\n\\nRelationship chain for tenant security:\\n- Service → Restaurant → Tenant\\n- Table → Restaurant → Tenant\\n- ChatMessage → Service → Restaurant → Tenant",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "INITIATED,ACTIVE,COMPLETED"
+    },
+    {
+      "fieldName": "initiatedAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "acknowledgedAt",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "completedAt",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Service",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityField": "name",
+      "otherEntityName": "restaurant",
+      "relationshipName": "restaurant",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "tableNumber",
+      "otherEntityName": "table",
+      "relationshipName": "table",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "customer",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required",
+      "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "server",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipWithBuiltInEntity": true
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

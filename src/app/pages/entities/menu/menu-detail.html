@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Menu</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-label position="fixed">ID</ion-label>
+      <div item-content>
+        <span id="id-content">{{ menu.id }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Name</ion-label>
+      <div item-content>
+        <span id="name-content">{{ menu.name }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Description</ion-label>
+      <div item-content>
+        <span id="description-content">{{ menu.description }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Active</ion-label>
+      <div item-content>
+        <span id="active-content">{{ menu.active }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Created Date</ion-label>
+      <div item-content>
+        <span id="createdDate-content">{{ menu.createdDate | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label position="fixed">Last Modified Date</ion-label>
+      <div item-content>
+        <span id="lastModifiedDate-content">{{ menu.lastModifiedDate | date: 'medium' }}</span>
+      </div>
+    </ion-item>
+    <ion-item>
+      <ion-label>Restaurant</ion-label>
+      @if (menu.restaurantId) {
+        <div item-content>
+          <a>{{ menu.restaurantundefined }}</a>
+        </div>
+      }
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="block" color="primary" (click)="open(menu)">{{ 'EDIT_BUTTON' | translate }}</ion-button>
+  <ion-button expand="block" color="danger" (click)="deleteModal(menu)">{{ 'DELETE_BUTTON' | translate }}</ion-button>
+</ion-content>

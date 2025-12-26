@@ -1,0 +1,9 @@
+{
+  "name": "wombat howl bobble",
+  "basePrice": 28458.44,
+  "active": true,
+  "availableForBreakfast": true,
+  "availableForLunch": true,
+  "availableForDinner": true,
+  "displayOrder": 10538
+}

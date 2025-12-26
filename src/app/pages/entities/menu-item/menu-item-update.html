@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Menu Item</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!isReadyToSave" (click)="save()" color="primary">
+        @if (platform.is('ios')) {
+          <span>{{ 'DONE_BUTTON' | translate }}</span>
+        } @else {
+          <ion-icon name="checkmark"></ion-icon>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (form) {
+    <form name="form" [formGroup]="form" (ngSubmit)="save()">
+      <ion-list>
+        <ion-item [hidden]="!form.id">
+          <ion-label>ID</ion-label>
+          <ion-input type="hidden" id="id" formControlName="id" readonly></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Name</ion-label>
+          <ion-input type="text" name="name" formControlName="name"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Description</ion-label>
+          <ion-input type="text" name="description" formControlName="description"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Base Price</ion-label>
+          <ion-input type="number" name="basePrice" formControlName="basePrice"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Image Url</ion-label>
+          <ion-input type="text" name="imageUrl" formControlName="imageUrl"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Active</ion-label>
+          <ion-checkbox formControlName="active"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-label>Featured</ion-label>
+          <ion-checkbox formControlName="featured"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-label>Available For Breakfast</ion-label>
+          <ion-checkbox formControlName="availableForBreakfast"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-label>Available For Lunch</ion-label>
+          <ion-checkbox formControlName="availableForLunch"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-label>Available For Dinner</ion-label>
+          <ion-checkbox formControlName="availableForDinner"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Display Order</ion-label>
+          <ion-input type="number" name="displayOrder" formControlName="displayOrder"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Created Date</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" formControlName="createdDate" id="field_createdDate"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Last Modified Date</ion-label>
+          <ion-datetime displayFormat="MM/DD/YYYY HH:mm" formControlName="lastModifiedDate" id="field_lastModifiedDate"></ion-datetime>
+        </ion-item>
+        <ion-item>
+          <ion-label>Category</ion-label>
+          <ion-select id="field_category" formControlName="categoryId" [compareWith]="compareMenuCategory" required>
+            @if (!form.value.categoryId) {
+              <ion-select-option [value]="null" selected></ion-select-option>
+            }
+            @for (menuCategoryOption of menuCategories; track trackMenuCategoryById($index, menuCategoryOption)) {
+              <ion-select-option [value]="menuCategoryOption.id">{{ menuCategoryOption.name }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <div [hidden]="!(form.controls.?.dirty && form.controls.?.invalid)">
+          <small [hidden]="!form.controls.?.errors?.required"> This field is required. </small>
+        </div>
+      </ion-list>
+    </form>
+  }
+</ion-content>

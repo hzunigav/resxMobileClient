@@ -1,0 +1,85 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>{{ 'MENU.TITLE' | translate }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <!-- Category Tabs -->
+  <ion-toolbar *ngIf="!isLoading && categories.length > 0">
+    <ion-segment [(ngModel)]="selectedCategory" (ionChange)="selectCategory($event.detail.value)" scrollable>
+      <ion-segment-button *ngFor="let category of categories" [value]="category">
+        <ion-label>{{ category.name }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>{{ 'MENU.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Menu Items Grid -->
+  <div *ngIf="!isLoading && filteredItems.length > 0" class="menu-grid">
+    <div *ngFor="let item of filteredItems" class="menu-item-card">
+      <div class="item-image" *ngIf="item.imageUrl">
+        <img [src]="item.imageUrl" [alt]="item.name" />
+      </div>
+      <div class="item-image placeholder" *ngIf="!item.imageUrl">
+        <ion-icon name="restaurant"></ion-icon>
+      </div>
+
+      <div class="item-details">
+        <h3 class="item-name">{{ item.name }}</h3>
+        <p class="item-description" *ngIf="item.description">{{ item.description }}</p>
+
+        <!-- Price and Sizes -->
+        <div class="item-pricing">
+          <ng-container *ngIf="getItemSizes(item).length === 0">
+            <span class="price">${{ item.price?.toFixed(2) }}</span>
+            <ion-button size="small" (click)="addToCart(item)" color="primary">
+              <ion-icon slot="start" name="add"></ion-icon>
+              {{ 'MENU.ADD' | translate }}
+            </ion-button>
+          </ng-container>
+
+          <ng-container *ngIf="getItemSizes(item).length > 0">
+            <div class="size-options">
+              <div *ngFor="let size of getItemSizes(item)" class="size-option">
+                <div class="size-info">
+                  <span class="size-name">{{ size.sizeName }}</span>
+                  <span class="price">${{ size.price?.toFixed(2) }}</span>
+                </div>
+                <ion-button size="small" (click)="addToCart(item, size)" fill="outline" color="primary">
+                  <ion-icon slot="icon-only" name="add"></ion-icon>
+                </ion-button>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && filteredItems.length === 0" class="empty-state">
+    <ion-icon name="fast-food-outline"></ion-icon>
+    <p>{{ 'MENU.NO_ITEMS' | translate }}</p>
+  </div>
+</ion-content>
+
+<!-- Cart Footer -->
+<ion-footer>
+  <ion-toolbar>
+    <ion-button expand="block" (click)="viewCart()" color="primary">
+      <ion-icon slot="start" name="cart"></ion-icon>
+      {{ 'MENU.VIEW_CART' | translate }} ({{ (cartService.getCartSummary$() | async)?.itemCount || 0 }})
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>

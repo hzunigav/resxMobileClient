@@ -1,0 +1,48 @@
+{
+  "annotations": {
+    "changelogDate": "20251215144645"
+  },
+  "applications": "*",
+  "documentation": "ChatMessage entity - Real-time messages between customer and server\\nPersisted for chat history",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "messageText",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "maxlength"],
+      "fieldValidateRulesMaxlength": "1000"
+    },
+    {
+      "fieldName": "sentAt",
+      "fieldType": "Instant",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "readByRecipient",
+      "fieldType": "Boolean"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "ChatMessage",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "service",
+      "relationshipName": "service",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required"
+    },
+    {
+      "otherEntityField": "login",
+      "otherEntityName": "user",
+      "relationshipName": "sender",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one",
+      "relationshipValidateRules": "required",
+      "relationshipWithBuiltInEntity": true
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

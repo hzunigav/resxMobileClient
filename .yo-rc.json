@@ -1,0 +1,32 @@
+{
+  "generator-jhipster": {
+    "authenticationType": "jwt",
+    "baseName": "resxperienceIonic",
+    "blueprints": [
+      {
+        "name": "generator-jhipster-ionic",
+        "version": "8.7.0"
+      }
+    ],
+    "enableTranslation": true,
+    "entities": [
+      "Tenant",
+      "UserProfile",
+      "Restaurant",
+      "Menu",
+      "MenuCategory",
+      "MenuItem",
+      "MenuItemSize",
+      "Table",
+      "Service",
+      "ChatMessage"
+    ],
+    "jhipsterVersion": "8.11.0",
+    "prettierDefaultIndent": 2,
+    "projectName": "ResxperienceIonic"
+  },
+  "generator-jhipster-ionic": {
+    "appDir": "..\\RESx",
+    "ionicDir": null
+  }
+}

@@ -1,0 +1,160 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goToHome()">
+        <ion-icon slot="icon-only" name="home"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ 'ORDER_STATUS.TITLE' | translate }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>{{ 'ORDER_STATUS.LOADING' | translate }}</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <ion-icon name="alert-circle-outline" color="danger"></ion-icon>
+    <h2>{{ 'ORDER_STATUS.ERROR' | translate }}</h2>
+    <p>{{ error }}</p>
+    <ion-button (click)="loadOrder()">
+      {{ 'ORDER_STATUS.TRY_AGAIN' | translate }}
+    </ion-button>
+  </div>
+
+  <!-- Order Details -->
+  <div *ngIf="order && !isLoading" class="order-container">
+    <!-- Status Header -->
+    <div class="status-header" [ngClass]="'status-' + getStatusColor()">
+      <ion-icon [name]="getStatusIcon()" [color]="getStatusColor()"></ion-icon>
+      <h1>{{ getStatusDisplayText() }}</h1>
+      <p class="order-number">{{ 'ORDER_STATUS.ORDER_NUMBER' | translate }}: {{ order.orderNumber }}</p>
+    </div>
+
+    <!-- Status Timeline (only show if not rejected) -->
+    <div *ngIf="order.status !== OrderStatus.REJECTED" class="status-timeline">
+      <div class="timeline-step" [class.active]="isStatusActive(OrderStatus.PENDING)">
+        <div class="timeline-marker">
+          <ion-icon
+            [name]="isStatusActive(OrderStatus.PENDING) ? 'checkmark-circle' : 'ellipse-outline'"
+            [color]="isStatusActive(OrderStatus.PENDING) ? 'primary' : 'medium'"
+          ></ion-icon>
+        </div>
+        <div class="timeline-content">
+          <h3>{{ 'ORDER_STATUS.RECEIVED' | translate }}</h3>
+          <p *ngIf="order.createdAt">{{ order.createdAt | date: 'short' }}</p>
+        </div>
+      </div>
+
+      <div class="timeline-step" [class.active]="isStatusActive(OrderStatus.CONFIRMED)">
+        <div class="timeline-marker">
+          <ion-icon
+            [name]="isStatusActive(OrderStatus.CONFIRMED) ? 'checkmark-circle' : 'ellipse-outline'"
+            [color]="isStatusActive(OrderStatus.CONFIRMED) ? 'primary' : 'medium'"
+          ></ion-icon>
+        </div>
+        <div class="timeline-content">
+          <h3>{{ 'ORDER_STATUS.CONFIRMED' | translate }}</h3>
+          <p *ngIf="order.confirmedAt">{{ order.confirmedAt | date: 'short' }}</p>
+        </div>
+      </div>
+
+      <div class="timeline-step" [class.active]="isStatusActive(OrderStatus.PREPARING)">
+        <div class="timeline-marker">
+          <ion-icon
+            [name]="isStatusActive(OrderStatus.PREPARING) ? 'checkmark-circle' : 'ellipse-outline'"
+            [color]="isStatusActive(OrderStatus.PREPARING) ? 'primary' : 'medium'"
+          ></ion-icon>
+        </div>
+        <div class="timeline-content">
+          <h3>{{ 'ORDER_STATUS.PREPARING' | translate }}</h3>
+          <p *ngIf="order.preparingAt">{{ order.preparingAt | date: 'short' }}</p>
+        </div>
+      </div>
+
+      <div class="timeline-step" [class.active]="isStatusActive(OrderStatus.DELIVERED)">
+        <div class="timeline-marker">
+          <ion-icon
+            [name]="isStatusActive(OrderStatus.DELIVERED) ? 'checkmark-circle' : 'ellipse-outline'"
+            [color]="isStatusActive(OrderStatus.DELIVERED) ? 'success' : 'medium'"
+          ></ion-icon>
+        </div>
+        <div class="timeline-content">
+          <h3>{{ 'ORDER_STATUS.DELIVERED' | translate }}</h3>
+          <p *ngIf="order.deliveredAt">{{ order.deliveredAt | date: 'short' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rejection Reason (if rejected) -->
+    <ion-card *ngIf="order.status === OrderStatus.REJECTED && order.rejectionReason" color="danger">
+      <ion-card-content>
+        <h3>{{ 'ORDER_STATUS.REJECTION_REASON' | translate }}</h3>
+        <p>{{ order.rejectionReason }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Order Items -->
+    <div class="order-items-section">
+      <h2>{{ 'ORDER_STATUS.ORDER_ITEMS' | translate }}</h2>
+      <ion-list>
+        <ion-item *ngFor="let item of order.orderItems" lines="full">
+          <div class="item-details">
+            <div class="item-header">
+              <h3>{{ item.menuItemName }}</h3>
+              <span class="item-price">${{ item.subtotal?.toFixed(2) }}</span>
+            </div>
+            <p class="item-meta">
+              <span *ngIf="item.menuItemSizeName">{{ item.menuItemSizeName }} • </span>
+              Qty: {{ item.quantity }} @ ${{ item.unitPrice?.toFixed(2) }}
+            </p>
+            <p class="item-instructions" *ngIf="item.specialInstructions">
+              <ion-icon name="chatbox-outline"></ion-icon>
+              {{ item.specialInstructions }}
+            </p>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
+
+    <!-- Special Instructions -->
+    <ion-card *ngIf="order.specialInstructions">
+      <ion-card-content>
+        <h3>{{ 'ORDER_STATUS.SPECIAL_INSTRUCTIONS' | translate }}</h3>
+        <p>{{ order.specialInstructions }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Order Summary -->
+    <ion-card class="order-summary-card">
+      <ion-card-content>
+        <div class="summary-row">
+          <span>{{ 'ORDER_STATUS.SUBTOTAL' | translate }}</span>
+          <span>${{ order.subtotal?.toFixed(2) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>{{ 'ORDER_STATUS.TAX' | translate }}</span>
+          <span>${{ order.tax?.toFixed(2) }}</span>
+        </div>
+        <div class="summary-row total">
+          <span>{{ 'ORDER_STATUS.TOTAL' | translate }}</span>
+          <span>${{ order.total?.toFixed(2) }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Auto-refresh indicator -->
+    <div class="auto-refresh-indicator" *ngIf="!isLoading && order.status !== OrderStatus.DELIVERED && order.status !== OrderStatus.REJECTED">
+      <ion-icon name="sync-outline"></ion-icon>
+      <p>{{ 'ORDER_STATUS.AUTO_REFRESH' | translate }}</p>
+    </div>
+  </div>
+</ion-content>

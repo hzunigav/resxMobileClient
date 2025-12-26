@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Table</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button [disabled]="!isReadyToSave" (click)="save()" color="primary">
+        @if (platform.is('ios')) {
+          <span>{{ 'DONE_BUTTON' | translate }}</span>
+        } @else {
+          <ion-icon name="checkmark"></ion-icon>
+        }
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (form) {
+    <form name="form" [formGroup]="form" (ngSubmit)="save()">
+      <ion-list>
+        <ion-item [hidden]="!form.id">
+          <ion-label>ID</ion-label>
+          <ion-input type="hidden" id="id" formControlName="id" readonly></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Table Number</ion-label>
+          <ion-input type="text" name="tableNumber" formControlName="tableNumber"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Capacity</ion-label>
+          <ion-input type="number" name="capacity" formControlName="capacity"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Qr Code Url</ion-label>
+          <ion-input type="text" name="qrCodeUrl" formControlName="qrCodeUrl"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Qr Token</ion-label>
+          <ion-input type="text" name="qrToken" formControlName="qrToken"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>Active</ion-label>
+          <ion-checkbox formControlName="active"></ion-checkbox>
+        </ion-item>
+        <ion-item>
+          <ion-label>Restaurant</ion-label>
+          <ion-select id="field_restaurant" formControlName="restaurantId" [compareWith]="compareRestaurant" required>
+            @if (!form.value.restaurantId) {
+              <ion-select-option [value]="null" selected></ion-select-option>
+            }
+            @for (restaurantOption of restaurants; track trackRestaurantById($index, restaurantOption)) {
+              <ion-select-option [value]="restaurantOption.id">{{ restaurantOption.name }}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <div [hidden]="!(form.get('restaurantId')?.dirty && form.get('restaurantId')?.invalid)">
+          <small [hidden]="!form.get('restaurantId')?.errors?.required"> This field is required. </small>
+        </div>
+      </ion-list>
+    </form>
+  }
+</ion-content>

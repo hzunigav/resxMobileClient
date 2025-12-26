@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Menu Items</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<!-- todo: add elasticsearch support -->
+<ion-content class="ion-padding">
+  <ion-refresher [disabled]="plt.is('desktop')" slot="fixed" (ionRefresh)="loadAll($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    @for (menuItem of menuItems; track trackId($index, menuItem)) {
+      <ion-item-sliding #slidingItem>
+        <ion-item (click)="view(menuItem)">
+          <ion-label text-wrap>
+            <p>{{ menuItem.id }}</p>
+            <ion-text color="primary"
+              ><h2>{{ menuItem.name }}</h2></ion-text
+            >
+            <p>{{ menuItem.description }}</p>
+            <p>{{ menuItem.basePrice }}</p>
+            <p>{{ menuItem.imageUrl }}</p>
+            <p>{{ menuItem.active }}</p>
+            <p>{{ menuItem.featured }}</p>
+            <p>{{ menuItem.availableForBreakfast }}</p>
+            <p>{{ menuItem.availableForLunch }}</p>
+            <p>{{ menuItem.availableForDinner }}</p>
+            <p>{{ menuItem.displayOrder }}</p>
+            <p>{{ menuItem.createdDate | date: 'medium' }}</p>
+            <p>{{ menuItem.lastModifiedDate | date: 'medium' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="edit(slidingItem, menuItem)">
+            {{ 'EDIT_BUTTON' | translate }}
+          </ion-item-option>
+          <ion-item-option color="danger" (click)="delete(menuItem)">
+            {{ 'DELETE_BUTTON' | translate }}
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    }
+  </ion-list>
+  @if (!menuItems?.length) {
+    <ion-item>
+      <ion-label> No Menu Items found. </ion-label>
+    </ion-item>
+  }
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="new()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
