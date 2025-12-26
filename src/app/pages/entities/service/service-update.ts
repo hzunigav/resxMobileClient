@@ -33,10 +33,10 @@ export class ServiceUpdatePage implements OnInit {
     initiatedAt: [null, [Validators.required]],
     acknowledgedAt: [null, []],
     completedAt: [null, []],
-    restaurantId: [null, [Validators.required]],
-    tableId: [null, [Validators.required]],
-    customerId: [null, [Validators.required]],
-    serverId: [null, []],
+    restaurant: [null, [Validators.required]],
+    table: [null, [Validators.required]],
+    customer: [null, [Validators.required]],
+    server: [null, []],
   });
 
   constructor(
@@ -86,10 +86,10 @@ export class ServiceUpdatePage implements OnInit {
       initiatedAt: this.isNew ? new Date().toISOString() : service.initiatedAt,
       acknowledgedAt: this.isNew ? new Date().toISOString() : service.acknowledgedAt,
       completedAt: this.isNew ? new Date().toISOString() : service.completedAt,
-      restaurantId: service.restaurantId,
-      tableId: service.tableId,
-      customerId: service.customerId,
-      serverId: service.serverId,
+      restaurant: service.restaurant,
+      table: service.table,
+      customer: service.customer,
+      server: service.server,
     });
   }
 
@@ -159,13 +159,13 @@ export class ServiceUpdatePage implements OnInit {
       ...new Service(),
       id: this.form.get(['id']).value,
       status: this.form.get(['status']).value,
-      initiatedAt: new Date(this.form.get(['initiatedAt']).value),
-      acknowledgedAt: new Date(this.form.get(['acknowledgedAt']).value),
-      completedAt: new Date(this.form.get(['completedAt']).value),
-      restaurantId: this.form.get(['restaurantId']).value,
-      tableId: this.form.get(['tableId']).value,
-      customerId: this.form.get(['customerId']).value,
-      serverId: this.form.get(['serverId']).value,
+      initiatedAt: this.form.get(['initiatedAt']).value,
+      acknowledgedAt: this.form.get(['acknowledgedAt']).value,
+      completedAt: this.form.get(['completedAt']).value,
+      restaurant: this.form.get(['restaurant']).value,
+      table: this.form.get(['table']).value,
+      customer: this.form.get(['customer']).value,
+      server: this.form.get(['server']).value,
     };
   }
 }

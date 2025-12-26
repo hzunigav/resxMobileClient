@@ -1,25 +1,47 @@
 import { BaseEntity } from 'src/model/base-entity';
 
 export const enum ServiceStatus {
-  'INITIATED',
-  'ACTIVE',
-  'COMPLETED',
+  'INITIATED' = 'INITIATED',
+  'ACTIVE' = 'ACTIVE',
+  'COMPLETED' = 'COMPLETED',
+}
+
+export interface Restaurant {
+  id?: number;
+  name?: string;
+  slug?: string;
+  description?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  active?: boolean;
+  logoUrl?: string;
+}
+
+export interface Table {
+  id?: number;
+  tableNumber?: string;
+  capacity?: number;
+  qrCodeUrl?: string;
+  qrToken?: string;
+  active?: boolean;
+}
+
+export interface User {
+  id?: number;
+  login?: string;
 }
 
 export class Service implements BaseEntity {
   constructor(
     public id?: number,
     public status?: ServiceStatus,
-    public initiatedAt?: any,
-    public acknowledgedAt?: any,
-    public completedAt?: any,
-    public restaurantundefined?: string,
-    public restaurantId?: number,
-    public tableundefined?: string,
-    public tableId?: number,
-    public customerundefined?: string,
-    public customerId?: number,
-    public serverundefined?: string,
-    public serverId?: number,
+    public initiatedAt?: string,
+    public acknowledgedAt?: string,
+    public completedAt?: string,
+    public restaurant?: Restaurant,
+    public table?: Table,
+    public customer?: User,
+    public server?: User,
   ) {}
 }

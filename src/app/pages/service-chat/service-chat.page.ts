@@ -110,11 +110,11 @@ export class ServiceChatPage implements OnInit, OnDestroy {
     }
 
     const message: ChatMessage = {
-      serviceId: this.serviceId,
-      senderType: 'CUSTOMER',
-      senderId: this.account.id,
-      content: this.newMessage.trim(),
+      messageText: this.newMessage.trim(),
       sentAt: new Date().toISOString(),
+      service: { id: this.serviceId },
+      sender: { id: this.account.id },
+      readByRecipient: false,
     };
 
     this.chatPollingService.sendMessage(message);
@@ -124,14 +124,23 @@ export class ServiceChatPage implements OnInit, OnDestroy {
   }
 
   async openMenu() {
-    if (!this.service?.restaurantId) {
+    // Try to get restaurant ID from service object first, then from active service as fallback
+    let restaurantId = this.service?.restaurant?.id;
+
+    if (!restaurantId) {
+      const activeService = this.serviceStatusService.getActiveService();
+      restaurantId = activeService?.restaurantId;
+    }
+
+    if (!restaurantId) {
+      console.error('No restaurant ID available');
       return;
     }
 
     const modal = await this.modalController.create({
       component: MenuModalComponent,
       componentProps: {
-        restaurantId: this.service.restaurantId,
+        restaurantId: restaurantId,
       },
     });
 
@@ -144,7 +153,8 @@ export class ServiceChatPage implements OnInit, OnDestroy {
   }
 
   isCustomerMessage(message: ChatMessage): boolean {
-    return message.senderType === 'CUSTOMER';
+    // Check if the message sender is the current user (customer)
+    return message.sender?.id === this.account?.id;
   }
 
   getMessageTime(message: ChatMessage): string {

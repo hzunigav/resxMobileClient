@@ -31,4 +31,7 @@ export class ChatMessageService {
   delete(id: number): Observable<HttpResponse<any>> {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
+  sendMessage(messageData: { serviceId: number; content: string }): Observable<HttpResponse<ChatMessage>> {
+    return this.http.post<ChatMessage>(`${this.resourceUrl}/send`, messageData, { observe: 'response' });
+  }
 }

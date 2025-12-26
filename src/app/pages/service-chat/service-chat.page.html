@@ -33,7 +33,7 @@
     <div *ngFor="let message of messages" [class.customer-message]="isCustomerMessage(message)"
       [class.server-message]="!isCustomerMessage(message)" class="message-wrapper">
       <div class="message-bubble">
-        <p class="message-content">{{ message.content }}</p>
+        <p class="message-content">{{ message.messageText }}</p>
         <span class="message-time">{{ getMessageTime(message) }}</span>
       </div>
     </div>
@@ -58,6 +58,13 @@
       </div>
     </div>
   </div>
+
+  <!-- Floating Action Button for Menu -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openMenu()" color="success">
+      <ion-icon name="restaurant"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>
 
 <!-- Message Input Footer -->

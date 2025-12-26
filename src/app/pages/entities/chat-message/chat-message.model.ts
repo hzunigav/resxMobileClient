@@ -1,15 +1,23 @@
 import { BaseEntity } from 'src/model/base-entity';
 
+export interface Service {
+  id?: number;
+  status?: string;
+}
+
+export interface User {
+  id?: number;
+  login?: string;
+}
+
 export class ChatMessage implements BaseEntity {
   constructor(
     public id?: number,
     public messageText?: string,
-    public content?: string,
-    public sentAt?: any,
+    public sentAt?: string,
     public readByRecipient?: boolean,
-    public senderType?: string,
-    public serviceId?: number,
-    public senderId?: number,
+    public service?: Service,
+    public sender?: User,
   ) {
     this.readByRecipient = false;
   }

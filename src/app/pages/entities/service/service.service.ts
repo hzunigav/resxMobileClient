@@ -31,4 +31,7 @@ export class ServiceService {
   delete(id: number): Observable<HttpResponse<any>> {
     return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
+  scanQRCode(qrData: { restaurantId: number; tableId: number }): Observable<HttpResponse<Service>> {
+    return this.http.post<Service>(`${this.resourceUrl}/scan`, qrData, { observe: 'response' });
+  }
 }

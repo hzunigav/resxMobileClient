@@ -144,6 +144,19 @@
   }
 }
 
+ion-fab {
+  ion-fab-button {
+    --background: #10b981;
+    --background-hover: #059669;
+    --background-activated: #047857;
+    --box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+
+    ion-icon {
+      font-size: 24px;
+    }
+  }
+}
+
 ion-footer {
   .message-input-toolbar {
     --padding-start: 8px;

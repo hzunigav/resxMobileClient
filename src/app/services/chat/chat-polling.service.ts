@@ -79,7 +79,7 @@ export class ChatPollingService implements OnDestroy {
    * @param serviceId The service ID
    */
   private loadInitialMessages(serviceId: number): void {
-    this.chatMessageService.query({ 'serviceId.equals': serviceId }).subscribe(
+    this.chatMessageService.query({ 'serviceId.equals': serviceId, sort: ['sentAt,asc'] }).subscribe(
       response => {
         const messages = response.body || [];
         this.messagesSubject.next(messages);
@@ -108,6 +108,7 @@ export class ChatPollingService implements OnDestroy {
   private pollNewMessages(serviceId: number): Observable<ChatMessage[]> {
     return this.chatMessageService.query({
       'serviceId.equals': serviceId,
+      sort: ['sentAt,asc'],
       'id.greaterThan': this.lastMessageId,
     }).pipe(
       switchMap(response => {
@@ -157,8 +158,14 @@ export class ChatPollingService implements OnDestroy {
     const currentMessages = this.messagesSubject.value;
     this.messagesSubject.next([...currentMessages, message]);
 
+    // Prepare data for backend (just serviceId and content)
+    const messageData = {
+      serviceId: message.service?.id!,
+      content: message.messageText!,
+    };
+
     // Send to backend
-    this.chatMessageService.create(message).subscribe(
+    this.chatMessageService.sendMessage(messageData).subscribe(
       response => {
         // Update with server response
         const createdMessage = response.body;

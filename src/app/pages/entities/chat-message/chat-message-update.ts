@@ -28,8 +28,8 @@ export class ChatMessageUpdatePage implements OnInit {
     messageText: [null, [Validators.required]],
     sentAt: [null, [Validators.required]],
     readByRecipient: ['false', []],
-    serviceId: [null, [Validators.required]],
-    senderId: [null, [Validators.required]],
+    service: [null, [Validators.required]],
+    sender: [null, [Validators.required]],
   });
 
   constructor(
@@ -71,8 +71,8 @@ export class ChatMessageUpdatePage implements OnInit {
       messageText: chatMessage.messageText,
       sentAt: this.isNew ? new Date().toISOString() : chatMessage.sentAt,
       readByRecipient: chatMessage.readByRecipient,
-      serviceId: chatMessage.serviceId,
-      senderId: chatMessage.senderId,
+      service: chatMessage.service,
+      sender: chatMessage.sender,
     });
   }
 
@@ -135,10 +135,10 @@ export class ChatMessageUpdatePage implements OnInit {
       ...new ChatMessage(),
       id: this.form.get(['id']).value,
       messageText: this.form.get(['messageText']).value,
-      sentAt: new Date(this.form.get(['sentAt']).value),
+      sentAt: this.form.get(['sentAt']).value,
       readByRecipient: this.form.get(['readByRecipient']).value,
-      serviceId: this.form.get(['serviceId']).value,
-      senderId: this.form.get(['senderId']).value,
+      service: this.form.get(['service']).value,
+      sender: this.form.get(['sender']).value,
     };
   }
 }

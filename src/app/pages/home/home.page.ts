@@ -162,28 +162,32 @@ export class HomePage implements OnInit {
       });
       toast.present();
 
-      // Create service entity
-      const newService: Service = {
-        tableId,
+      // Prepare QR scan data
+      const qrData = {
         restaurantId,
-        status: ServiceStatus.ACTIVE,
-        initiatedAt: new Date().toISOString(),
+        tableId,
       };
 
-      // Call backend to create service
-      this.serviceService.create(newService).subscribe(
-        async (createdService: Service) => {
+      // Call backend to create service via scan endpoint
+      this.serviceService.scanQRCode(qrData).subscribe(
+        async response => {
+          const createdService = response.body;
+          if (!createdService) {
+            await this.showErrorMessage('Invalid service response from server.');
+            return;
+          }
+
           // Save to service status
           if (
             createdService.id &&
-            createdService.tableId &&
-            createdService.restaurantId &&
+            createdService.table?.id &&
+            createdService.restaurant?.id &&
             createdService.initiatedAt
           ) {
             const serviceInfo: ActiveServiceInfo = {
               serviceId: createdService.id,
-              tableId: createdService.tableId,
-              restaurantId: createdService.restaurantId,
+              tableId: createdService.table.id,
+              restaurantId: createdService.restaurant.id,
               initiatedAt: createdService.initiatedAt,
             };
 
