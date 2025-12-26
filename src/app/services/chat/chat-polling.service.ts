@@ -159,9 +159,10 @@ export class ChatPollingService implements OnDestroy {
 
     // Send to backend
     this.chatMessageService.create(message).subscribe(
-      createdMessage => {
+      response => {
         // Update with server response
-        if (createdMessage.id) {
+        const createdMessage = response.body;
+        if (createdMessage?.id) {
           this.messageCache.add(createdMessage.id);
           if (createdMessage.id > this.lastMessageId) {
             this.lastMessageId = createdMessage.id;
