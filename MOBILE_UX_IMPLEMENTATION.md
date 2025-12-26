@@ -1,7 +1,7 @@
 # Mobile UX Implementation Plan
 
 **Project:** ResXperience Ionic Mobile App
-**Status:** 📋 Ready for Implementation
+**Status:** 🚧 In Progress - Phases 1-4 Complete
 **Last Updated:** December 25, 2025
 **Languages:** English & Spanish
 
@@ -28,37 +28,51 @@ Transform the ionic4j mobile app to implement the optimal MVP customer experienc
 - Network status monitoring and push notifications integrated
 - Entity services for Service, Order, MenuItem, ChatMessage ready
 
-### ❌ Gaps
-- Separate login/signup pages (need unified auth screen)
-- No QR code scanning implementation
-- No dedicated service/chat interface
-- No customer-friendly menu browsing UI
-- Signup doesn't auto-login after registration
-- Cart/order pages not in main routing
-- Tab navigation doesn't match customer flow
-- Design system not consistently applied
+### ✅ Completed (Phases 1-4)
+- ✅ Unified auth screen with login/register toggle and auto-login
+- ✅ QR code scanning with jsQR + Capacitor Camera
+- ✅ Service chat interface with message polling
+- ✅ Menu modal component with category filtering
+- ✅ Service status persistence with Capacitor Preferences
+- ✅ Updated routing (auth, home, service/:id)
+- ✅ Simplified tab navigation (Home, Orders, Account)
+- ✅ AUTH and HOME translation keys (EN/ES)
+- ✅ ResXperience design system applied to new pages
+
+### 🔄 Remaining Tasks
+- Add SERVICE_CHAT and MENU translation keys
+- Implement cart persistence with Capacitor Preferences
+- Fix hardcoded SERVICE_ID in order-confirmation page
+- Apply design system to existing pages (cart, order-status, account)
+- Backend endpoint coordination (active service, chat polling)
 
 ---
 
 ## 🏗️ Implementation Phases
 
-### Phase 1: Foundation & Routing Setup (Week 1)
+### Phase 1: Foundation & Routing Setup ✅ COMPLETE
+
+**Status:** ✅ **COMPLETED**
 
 **Goals:**
 - ✅ Update main routing with new screens
 - ✅ Fix auth guard redirect
 - ✅ Simplify tab navigation structure
 
-**Key Files:**
-- `src/app/app-routing.module.ts` - Add routes for auth, home, service/:id
-- `src/app/services/auth/user-route-access.service.ts` - Line 49: Change redirect to `/auth`
-- `src/app/pages/tabs/tabs-routing.module.ts` - Update to: Home, Orders, Account
+**Implementation Notes:**
+- Updated `app-routing.module.ts` with routes: `/auth`, `/home`, `/service/:id`
+- Modified `user-route-access.service.ts:49` to redirect to `/auth` instead of `/accessdenied`
+- Updated `tabs.router.module.ts` to show: Home (QR Scanner), Orders, Account
+- Updated `tabs.page.html` with new icons: qr-code, receipt, person
+- Created separate `service-chat-routing.module.ts` with auth guard
 
 **Details:** See [docs/MASTER_PLAN.md](../RESx/docs/MASTER_PLAN.md#phase-1-foundation--routing-setup) Phase 1
 
 ---
 
-### Phase 2: Unified Auth Screen (Week 1)
+### Phase 2: Unified Auth Screen ✅ COMPLETE
+
+**Status:** ✅ **COMPLETED**
 
 **Goals:**
 - ✅ Create NgModule-based auth page
@@ -66,105 +80,79 @@ Transform the ionic4j mobile app to implement the optimal MVP customer experienc
 - ✅ Add language selector (EN/ES)
 - ✅ Apply ResXperience design system
 
-**Files to Create:**
-```
-src/app/pages/auth/
-├── auth.page.ts          # Component logic with auto-login
-├── auth.page.html        # Single form toggle (login/register)
-├── auth.page.scss        # Glassmorphism styling
-├── auth.module.ts        # NgModule definition
-└── auth-routing.module.ts # Routing
-```
-
-**Key Features:**
-- Toggle between login and register modes
-- Email becomes username (no separate username field)
+**Implementation Notes:**
+- Created complete auth page (5 files: page.ts, page.html, page.scss, module.ts, routing.module.ts)
+- Implemented toggle between login/register modes with ion-segment
+- Email automatically used as username (no separate username field)
 - Auto-login after successful registration using `LoginService.login()`
-- Language toggle button (persists to Capacitor Preferences)
+- Language toggle (EN ↔ ES) with Capacitor Preferences persistence
+- Glassmorphism design with ResXperience colors (#10b981 Electric Emerald)
+- Added AUTH.* translation keys to en.json and es.json
+- Form validation with error handling for existing users and invalid passwords
 
 **Details:** See [docs/MASTER_PLAN.md](../RESx/docs/MASTER_PLAN.md#phase-2-unified-auth-screen) Phase 2
 
 ---
 
-### Phase 3: QR Scanner Home Screen (Week 2)
+### Phase 3: QR Scanner Home Screen ✅ COMPLETE
+
+**Status:** ✅ **COMPLETED**
 
 **Goals:**
-- ✅ Install QR scanner plugins (dual approach)
+- ✅ Install QR scanner plugins (Camera + jsQR approach)
 - ✅ Create home/scanner page
 - ✅ Implement service auto-creation
 - ✅ Add active service detection with persistence
 
-**NPM Dependencies:**
-```bash
-npm install @capacitor-mlkit/barcode-scanning
-npm install jsqr
-npm install --save-dev @types/jsqr
-```
-
-**Files to Create:**
-```
-src/app/pages/home/
-├── home.page.ts          # QR scanning logic
-├── home.page.html        # Scan button + resume banner
-├── home.page.scss        # Mobile-first styling
-├── home.module.ts        # NgModule definition
-└── home-routing.module.ts # Routing
-
-src/app/services/
-├── qr-scanner/qr-scanner.service.ts          # Dual scanner (ML Kit + jsQR)
-└── service-status/service-status.service.ts   # State management with Preferences
-```
-
-**Key Features:**
-- User greeting header with avatar
-- Large centered QR scan button
-- Manual code entry fallback
-- Active service resume banner (sticky bottom)
-- Offline detection and handling
-- QR Code Format: `resx://table/{tableId}/restaurant/{restaurantId}`
+**Implementation Notes:**
+- Installed `jsqr` package for QR code decoding (ML Kit incompatible with Capacitor 7)
+- Created `qr-scanner.service.ts` using @capacitor/camera + jsQR
+- Created `service-status.service.ts` with Capacitor Preferences persistence
+- Updated home page with QR scanning functionality and UI
+- Implemented service auto-creation with backend ServiceService integration
+- QR code parsing for format: `resx://table/{tableId}/restaurant/{restaurantId}`
+- User greeting with avatar icon
+- Large centered scan button with loading state
+- Manual code entry fallback dialog
+- Active service resume banner (sticky bottom with slideUp animation)
+- Network status monitoring with offline indicator
+- Added HOME.* translation keys to en.json and es.json
+- Mobile-first responsive design with ResXperience colors
 
 **Details:** See [docs/MASTER_PLAN.md](../RESx/docs/MASTER_PLAN.md#phase-3-qr-scanner-home-screen) Phase 3
 
 ---
 
-### Phase 4: Service Chat Interface (Week 3)
+### Phase 4: Service Chat Interface ✅ COMPLETE (Core)
+
+**Status:** ✅ **CORE COMPLETE** - Remaining: Translation keys, cart persistence, order-confirmation fix
 
 **Goals:**
 - ✅ Create service chat page with timeline
 - ✅ Implement chat message polling (with deduplication & retry)
 - ✅ Create menu modal component
-- ✅ Update cart persistence
-- ✅ Fix hardcoded service ID in order confirmation
+- 🔄 Update cart persistence (TODO)
+- 🔄 Fix hardcoded service ID in order confirmation (TODO)
 
-**Files to Create:**
-```
-src/app/pages/service-chat/
-├── service-chat.page.ts         # Chat + menu modal
-├── service-chat.page.html       # Timeline with order cards
-├── service-chat.page.scss       # Chat styling
-├── service-chat.module.ts       # NgModule definition
-├── service-chat-routing.module.ts # Routing
-└── components/menu-modal/
-    ├── menu-modal.component.ts   # Menu browsing
-    ├── menu-modal.component.html # Category tabs + items
-    └── menu-modal.component.scss # Grid layout
+**Implementation Notes:**
+- Created `chat-polling.service.ts` with 5-second polling, deduplication, and retry logic
+- Created complete service-chat page (page.ts, page.html, page.scss, module.ts, routing.module.ts)
+- Implemented chat timeline with message bubbles (server left, customer right)
+- Order cards embedded in chat with status badges
+- Message input footer with send button
+- Auto-scroll to bottom on new messages
+- OnDestroy cleanup (stops polling when leaving page)
+- Created `menu-modal` component (component.ts, component.html, component.scss)
+- Menu modal with scrollable category tabs
+- Menu items grid with images, descriptions, and pricing
+- Size selection support with add-to-cart buttons
+- Cart integration and footer with item count
+- Responsive grid layout (280px minimum per item)
 
-src/app/services/chat/
-└── chat-polling.service.ts       # Polling with deduplication
-```
-
-**Key Features:**
-- Scrollable chat timeline (server left, customer right)
-- Order cards embedded in chat
-- Message input bar with send button
-- 5-second polling with retry logic (max 3 retries)
-- Message deduplication using Set-based cache
-- Menu modal with category filtering
-- Cart persistence to Capacitor Preferences
-
-**Files to Modify:**
-- `src/app/pages/order-confirmation/order-confirmation.page.ts` - Remove hardcoded `SERVICE_ID`, use `ServiceStatusService`
-- `src/app/services/cart/cart.service.ts` - Add Capacitor Preferences persistence
+**Remaining Tasks:**
+- ⏳ Add SERVICE_CHAT.* and MENU.* translation keys to en.json and es.json
+- ⏳ Implement cart persistence using Capacitor Preferences in cart.service.ts
+- ⏳ Fix hardcoded SERVICE_ID in order-confirmation.page.ts (use ServiceStatusService)
 
 **Details:** See [docs/MASTER_PLAN.md](../RESx/docs/MASTER_PLAN.md#phase-4-service-chat-interface) Phase 4
 
@@ -395,7 +383,30 @@ Implementation is complete when:
 
 ---
 
-**Status:** 📋 Ready for Implementation
-**Risk Level:** Moderate (mitigations in place)
+**Status:** 🚧 In Progress - Phases 1-4 Complete (Core Functionality)
+**Progress:** 4/7 Phases Complete (57%)
+**Risk Level:** Low (core architecture proven)
 **Languages:** English & Spanish
 **Last Updated:** December 25, 2025
+
+## 📝 Implementation Summary
+
+**Completed:**
+- ✅ Phase 1: Foundation & Routing Setup
+- ✅ Phase 2: Unified Auth Screen
+- ✅ Phase 3: QR Scanner Home Screen
+- ✅ Phase 4: Service Chat Interface (core)
+
+**In Progress:**
+- 🔄 Phase 4 Polish: Translation keys, cart persistence, order-confirmation fix
+- 🔄 Phase 5: Complete i18n implementation
+- 🔄 Phase 6: Design system consistency
+- 🔄 Phase 7: Integration & testing
+
+**Next Steps:**
+1. Add SERVICE_CHAT and MENU translation keys
+2. Implement cart persistence with Capacitor Preferences
+3. Fix hardcoded SERVICE_ID in order-confirmation
+4. Apply design system to existing pages (cart, order-status, account)
+5. Backend coordination for new endpoints
+6. Comprehensive testing on real devices
