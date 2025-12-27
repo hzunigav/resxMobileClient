@@ -25,9 +25,13 @@ export class CartService {
     quantity: number = 1,
     menuItemSizeId?: number,
     menuItemSizeName?: string,
-    specialInstructions?: string
+    specialInstructions?: string,
+    unitPrice?: number,
   ): void {
     const currentItems = this.cartItemsSubject.value;
+    // Use provided unitPrice or fall back to menuItem.basePrice
+    const itemPrice = unitPrice ?? menuItem.basePrice ?? 0;
+
 
     // Check if item already exists (same menu item + size)
     const existingItemIndex = currentItems.findIndex(
@@ -51,15 +55,15 @@ export class CartService {
       this.cartItemsSubject.next(updatedItems);
     } else {
       // Add new item
-      const unitPrice = menuItem.basePrice || 0;
+      
       const newItem: CartItem = {
         id: this.generateCartItemId(),
         menuItem,
         menuItemSizeId,
         menuItemSizeName,
         quantity,
-        unitPrice,
-        subtotal: unitPrice * quantity,
+        unitPrice: itemPrice,
+        subtotal: itemPrice * quantity,
         specialInstructions,
       };
 

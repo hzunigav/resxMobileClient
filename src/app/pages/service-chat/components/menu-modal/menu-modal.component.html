@@ -28,10 +28,10 @@
   <!-- Menu Items Grid -->
   <div *ngIf="!isLoading && filteredItems.length > 0" class="menu-grid">
     <div *ngFor="let item of filteredItems" class="menu-item-card">
-      <div class="item-image" *ngIf="item.imageUrl">
+      <div class="item-image" *ngIf="hasValidImageUrl(item)">
         <img [src]="item.imageUrl" [alt]="item.name" />
       </div>
-      <div class="item-image placeholder" *ngIf="!item.imageUrl">
+      <div class="item-image placeholder" *ngIf="!hasValidImageUrl(item)">
         <ion-icon name="restaurant"></ion-icon>
       </div>
 
@@ -42,7 +42,7 @@
         <!-- Price and Sizes -->
         <div class="item-pricing">
           <ng-container *ngIf="getItemSizes(item).length === 0">
-            <span class="price">${{ item.price?.toFixed(2) }}</span>
+            <span class="price">${{ item.basePrice?.toFixed(2) }}</span>
             <ion-button size="small" (click)="addToCart(item)" color="primary">
               <ion-icon slot="start" name="add"></ion-icon>
               {{ 'MENU.ADD' | translate }}

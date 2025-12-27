@@ -29,8 +29,9 @@ export class Order implements BaseEntity {
   }
 }
 
-// DTO for creating order from cart
+// DTO for creating order from cart (matches backend CreateOrderRequest)
 export interface CreateOrderFromCartDTO {
+  serviceId: number;
   items: CartItemDTO[];
   specialInstructions?: string;
 }

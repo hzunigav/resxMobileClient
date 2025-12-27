@@ -80,7 +80,7 @@ export class AuthPage implements OnInit {
 
     try {
       await this.loginService.login(credentials);
-      this.navController.navigateRoot('/home');
+      this.navController.navigateRoot('/tabs/home');
     } catch (err) {
       // Unable to log in
       this.password = '';
@@ -156,7 +156,7 @@ export class AuthPage implements OnInit {
 
     try {
       await this.loginService.login(credentials);
-      this.navController.navigateRoot('/home');
+      this.navController.navigateRoot('/tabs/home');
     } catch (err) {
       // Auto-login failed, switch to login mode
       this.authMode = 'login';

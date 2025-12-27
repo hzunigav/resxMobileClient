@@ -20,8 +20,8 @@ export class OrderService {
    * @param serviceId The service ID (hardcoded to 1 for MVP)
    * @param orderData The cart items and special instructions
    */
-  createFromCart(serviceId: number, orderData: CreateOrderFromCartDTO): Observable<HttpResponse<Order>> {
-    return this.http.post<Order>(`${this.resourceUrl}/from-cart/${serviceId}`, orderData, { observe: 'response' });
+  createFromCart(orderData: CreateOrderFromCartDTO): Observable<HttpResponse<Order>> {
+    return this.http.post<Order>(`${this.resourceUrl}/from-cart`, orderData, { observe: 'response' });
   }
 
   update(order: Order): Observable<HttpResponse<Order>> {

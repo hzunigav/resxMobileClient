@@ -72,8 +72,10 @@ export class MenuModalComponent implements OnInit {
     this.menuCategoryService.query({ 'menuId.equals': this.menu.id }).subscribe(
       response => {
         this.categories = response.body || [];
+        console.log('Loaded categories for menu:', this.categories);
         if (this.categories.length > 0) {
           this.selectedCategory = this.categories[0];
+          console.log('Selected category:', this.selectedCategory);
           this.loadMenuItems();
         } else {
           this.isLoading = false;
@@ -88,13 +90,34 @@ export class MenuModalComponent implements OnInit {
   }
 
   private loadMenuItems() {
-    if (!this.menu?.id) {
+    if (!this.categories || this.categories.length === 0) {
+      this.isLoading = false;
       return;
     }
 
-    this.menuItemService.query({ 'menuId.equals': this.menu.id }).subscribe(
+    // Get all category IDs for this menu
+    const categoryIds = this.categories.map(cat => cat.id).filter(id => id !== undefined);
+    console.log('Category IDs for this menu:', categoryIds);
+
+    if (categoryIds.length === 0) {
+      this.isLoading = false;
+      return;
+    }
+
+    // Query menu items by category IDs (backend will filter efficiently)
+    this.menuItemService.query({ 'categoryId.in': categoryIds, 'active.equals': true }).subscribe(
       response => {
-        this.menuItems = response.body || [];
+        console.log('API response for categories', categoryIds, ':', response.body);
+
+        // Ensure categoryId is set from the nested category object if not already present
+        this.menuItems = (response.body || []).map(item => {
+          if (!item.categoryId && (item as any).category?.id) {
+            item.categoryId = (item as any).category.id;
+          }
+          return item;
+        });
+
+        console.log(`Loaded ${this.menuItems.length} menu items from backend`);
         this.loadMenuItemSizes();
       },
       error => {
@@ -129,6 +152,11 @@ export class MenuModalComponent implements OnInit {
       this.filteredItems = this.menuItems;
     } else {
       this.filteredItems = this.menuItems.filter(item => item.categoryId === this.selectedCategory?.id);
+      console.log(
+        `Filtering items for category ${this.selectedCategory.name} (ID: ${this.selectedCategory.id}):`,
+        this.filteredItems.length,
+        'items found',
+      );
     }
   }
 
@@ -137,8 +165,11 @@ export class MenuModalComponent implements OnInit {
   }
 
   addToCart(menuItem: MenuItem, size?: MenuItemSize) {
-    const sizeId = size?.id || null;
-    this.cartService.addToCart(menuItem, sizeId);
+    const sizeId = size?.id;
+    const sizeName = size?.sizeName;
+
+    const unitPrice = size?.price || menuItem.basePrice || 0;
+    this.cartService.addToCart(menuItem, 1, sizeId, sizeName, undefined, unitPrice);
 
     this.showSuccess(`${menuItem.name} added to cart`);
   }
@@ -169,5 +200,15 @@ export class MenuModalComponent implements OnInit {
       color: 'danger',
     });
     toast.present();
+  }
+  /**
+   * Check if the image URL is valid (starts with http/https or is a data URL)
+   */
+  hasValidImageUrl(menuItem: MenuItem): boolean {
+    if (!menuItem.imageUrl) {
+      return false;
+    }
+    const url = menuItem.imageUrl.trim().toLowerCase();
+    return url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:');
   }
 }

@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { NavController, AlertController, ToastController } from '@ionic/angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { CartService } from '#app/services/cart/cart.service';
 import { CartItem, CartSummary } from '#app/services/cart/cart.model';
+import { OrderService } from '#app/pages/entities/order/order.service';
+import { ServiceStatusService } from '#app/services/service-status/service-status.service';
+import { CreateOrderFromCartDTO } from '#app/pages/entities/order/order.model';
 
 @Component({
   selector: 'app-cart',
@@ -23,88 +26,142 @@ export class CartPage implements OnInit, OnDestroy {
 
   constructor(
     private cartService: CartService,
-    private navController: NavController
+    private navController: NavController,
+    private orderService: OrderService,
+    private serviceStatusService: ServiceStatusService,
+    private alertController: AlertController,
+    private toastController: ToastController
   ) {}
 
   ngOnInit() {
-    // Subscribe to cart items
     this.cartService.cartItems$.pipe(takeUntil(this.destroy$)).subscribe(items => {
       this.cartItems = items;
     });
 
-    // Subscribe to cart summary
     this.cartService.getCartSummary$().pipe(takeUntil(this.destroy$)).subscribe(summary => {
       this.cartSummary = summary;
     });
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
+    // Dismiss any open alerts before destroying
+    const alert = await this.alertController.getTop();
+    if (alert) {
+      await alert.dismiss();
+    }
+
     this.destroy$.next();
     this.destroy$.complete();
   }
 
-  /**
-   * Increment item quantity
-   */
   incrementQuantity(cartItem: CartItem): void {
     this.cartService.updateQuantity(cartItem.id, cartItem.quantity + 1);
   }
 
-  /**
-   * Decrement item quantity
-   */
   decrementQuantity(cartItem: CartItem): void {
     if (cartItem.quantity > 1) {
       this.cartService.updateQuantity(cartItem.id, cartItem.quantity - 1);
     } else {
-      // If quantity would be 0, remove item
       this.removeItem(cartItem);
     }
   }
 
-  /**
-   * Remove item from cart (called by swipe-to-delete)
-   */
   removeItem(cartItem: CartItem): void {
     this.cartService.removeFromCart(cartItem.id);
   }
 
-  /**
-   * Update special instructions for an item
-   */
   updateInstructions(cartItem: CartItem, instructions: string): void {
     this.cartService.updateSpecialInstructions(cartItem.id, instructions);
   }
 
-  /**
-   * Clear all items from cart
-   */
   clearCart(): void {
     if (confirm('Are you sure you want to clear the cart?')) {
       this.cartService.clearCart();
     }
   }
 
-  /**
-   * Navigate to order confirmation page
-   */
-  proceedToCheckout(): void {
+  async proceedToCheckout(): Promise<void> {
     if (this.cartItems.length === 0) {
       return;
     }
-    this.navController.navigateForward('/order-confirmation');
+
+    const serviceId = this.serviceStatusService.getActiveServiceId();
+    if (!serviceId) {
+      await this.showError('No active service found. Please start a service first.');
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Confirm Order',
+      message: `Place order for ${this.cartSummary.itemCount} item(s) totaling $${this.cartSummary.total.toFixed(2)}?`,
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+        },
+        {
+          text: 'Confirm',
+          handler: async () => {
+            await alert.dismiss();
+            await this.submitOrder(serviceId);
+            return false;
+          },
+        },
+      ],
+    });
+
+    await alert.present();
   }
 
-  /**
-   * Navigate back
-   */
+  private async submitOrder(serviceId: number): Promise<void> {
+    const orderData: CreateOrderFromCartDTO = {
+      serviceId,
+      items: this.cartItems.map(item => ({
+        menuItemId: item.menuItem.id!,
+        menuItemSizeId: item.menuItemSizeId,
+        quantity: item.quantity,
+        specialInstructions: item.specialInstructions,
+      })),
+    };
+
+    try {
+      const response = await this.orderService.createFromCart(orderData).toPromise();
+
+      if (response && response.body) {
+        this.cartService.clearCart();
+        await this.showSuccess('Order submitted successfully!');
+        this.navController.navigateBack(`/service/${serviceId}`);
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      await this.showError('Failed to submit order. Please try again.');
+    }
+  }
+
+  private async showSuccess(message: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'top',
+      color: 'success',
+    });
+    await toast.present();
+  }
+
+  private async showError(message: string): Promise<void> {
+    const toast = await this.toastController.create({
+      message,
+      duration: 3000,
+      position: 'top',
+      color: 'danger',
+    });
+    await toast.present();
+  }
+
   goBack(): void {
     this.navController.back();
   }
 
-  /**
-   * Check if cart is empty
-   */
   isCartEmpty(): boolean {
     return this.cartItems.length === 0;
   }

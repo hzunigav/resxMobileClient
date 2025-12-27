@@ -76,6 +76,7 @@ export class OrderConfirmationPage implements OnInit, OnDestroy {
     try {
       // Build order DTO from cart items
       const orderDTO: CreateOrderFromCartDTO = {
+        serviceId: this.SERVICE_ID,
         items: this.cartItems.map(item => ({
           menuItemId: item.menuItem.id!,
           menuItemSizeId: item.menuItemSizeId,
@@ -87,7 +88,7 @@ export class OrderConfirmationPage implements OnInit, OnDestroy {
 
       // Call backend API
       const response = await this.orderService
-        .createFromCart(this.SERVICE_ID, orderDTO)
+        .createFromCart(orderDTO)
         .toPromise();
 
       await loading.dismiss();

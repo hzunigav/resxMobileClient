@@ -171,7 +171,7 @@ export class ServiceChatPage implements OnInit, OnDestroy {
   }
 
   goBack() {
-    this.navController.navigateBack('/home');
+    this.navController.navigateBack('/tabs/home');
   }
 
   private scrollToBottom() {
