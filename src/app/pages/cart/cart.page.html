@@ -15,8 +15,8 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <!-- Empty Cart Message -->
-  <div *ngIf="isCartEmpty()" class="empty-cart">
+  <!-- Empty Cart Message (Only when no previous orders exist) -->
+  <div *ngIf="isCartEmpty() && !hasPreviousOrders()" class="empty-cart">
     <ion-icon name="cart-outline" class="empty-cart-icon"></ion-icon>
     <h2>{{ 'CART.EMPTY_TITLE' | translate }}</h2>
     <p>{{ 'CART.EMPTY_MESSAGE' | translate }}</p>
@@ -25,80 +25,173 @@
     </ion-button>
   </div>
 
-  <!-- Cart Items List -->
-  <ion-list *ngIf="!isCartEmpty()">
-    <ion-item-sliding *ngFor="let item of cartItems">
-      <ion-item class="cart-item">
-        <div class="item-content">
-          <!-- Item Details -->
-          <div class="item-header">
-            <h3 class="item-name">{{ item.menuItem.name }}</h3>
-            <span class="item-price">${{ item.subtotal.toFixed(2) }}</span>
-          </div>
+  <!-- Current Cart Section -->
+  <div *ngIf="!isCartEmpty()">
+    <div class="section-header">
+      <h2 class="section-title">{{ 'CART.CURRENT_CART' | translate }}</h2>
+    </div>
 
-          <!-- Size Info (if applicable) -->
-          <p class="item-size" *ngIf="item.menuItemSizeName">
-            {{ 'CART.SIZE' | translate }}: {{ item.menuItemSizeName }}
-          </p>
+    <!-- Cart Items List -->
+    <ion-list>
+      <ion-item-sliding *ngFor="let item of cartItems">
+        <ion-item class="cart-item">
+          <div class="item-content">
+            <!-- Item Details -->
+            <div class="item-header">
+              <h3 class="item-name">{{ item.menuItem.name }}</h3>
+              <span class="item-price">${{ item.subtotal.toFixed(2) }}</span>
+            </div>
 
-          <!-- Special Instructions -->
-          <ion-item lines="none" *ngIf="item.specialInstructions" class="instructions-item">
-            <ion-label class="ion-text-wrap">
-              <p class="special-instructions">
-                <ion-icon name="chatbox-outline" class="instructions-icon"></ion-icon>
-                {{ item.specialInstructions }}
-              </p>
-            </ion-label>
-          </ion-item>
+            <!-- Size Info (if applicable) -->
+            <p class="item-size" *ngIf="item.menuItemSizeName">
+              {{ 'CART.SIZE' | translate }}: {{ item.menuItemSizeName }}
+            </p>
 
-          <!-- Quantity Controls -->
-          <div class="quantity-controls">
+            <!-- Special Instructions -->
+            <ion-item lines="none" *ngIf="item.specialInstructions" class="instructions-item">
+              <ion-label class="ion-text-wrap">
+                <p class="special-instructions">
+                  <ion-icon name="chatbox-outline" class="instructions-icon"></ion-icon>
+                  {{ item.specialInstructions }}
+                </p>
+              </ion-label>
+            </ion-item>
+
+            <!-- Add/Edit Note Button -->
             <ion-button
               fill="clear"
               size="small"
-              (click)="decrementQuantity(item)"
-              [disabled]="item.quantity <= 1"
+              (click)="showEditNotesDialog(item)"
+              class="note-button"
             >
-              <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+              <ion-icon
+                slot="start"
+                [name]="item.specialInstructions ? 'create-outline' : 'chatbox-ellipses-outline'"
+              ></ion-icon>
+              {{ (item.specialInstructions ? 'CART.EDIT_NOTE' : 'CART.ADD_NOTE') | translate }}
             </ion-button>
-            <span class="quantity">{{ item.quantity }}</span>
-            <ion-button fill="clear" size="small" (click)="incrementQuantity(item)">
-              <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
-            </ion-button>
-            <span class="unit-price">&#64; ${{ item.unitPrice.toFixed(2) }}</span>
+
+            <!-- Quantity Controls -->
+            <div class="quantity-controls">
+              <ion-button
+                fill="clear"
+                size="small"
+                (click)="decrementQuantity(item)"
+                [disabled]="item.quantity <= 1"
+              >
+                <ion-icon slot="icon-only" name="remove-circle-outline"></ion-icon>
+              </ion-button>
+              <span class="quantity">{{ item.quantity }}</span>
+              <ion-button fill="clear" size="small" (click)="incrementQuantity(item)">
+                <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+              </ion-button>
+              <span class="unit-price">&#64; ${{ item.unitPrice.toFixed(2) }}</span>
+            </div>
+          </div>
+        </ion-item>
+
+        <!-- Swipe to Delete -->
+        <ion-item-options side="end">
+          <ion-item-option color="danger" (click)="removeItem(item)">
+            <ion-icon slot="icon-only" name="trash"></ion-icon>
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <!-- Cart Summary -->
+    <div class="cart-summary">
+      <ion-card>
+        <ion-card-content>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'CART.SUBTOTAL' | translate }}</span>
+            <span class="summary-value">${{ cartSummary.subtotal.toFixed(2) }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">{{ 'CART.TAX' | translate }} (8%)</span>
+            <span class="summary-value">${{ cartSummary.tax.toFixed(2) }}</span>
+          </div>
+          <ion-item lines="none" class="summary-total">
+            <ion-label>
+              <h2>{{ 'CART.TOTAL' | translate }}</h2>
+            </ion-label>
+            <ion-note slot="end" class="total-amount">${{ cartSummary.total.toFixed(2) }}</ion-note>
+          </ion-item>
+        </ion-card-content>
+      </ion-card>
+    </div>
+  </div>
+
+  <!-- Previous Orders Section -->
+  <div *ngIf="hasPreviousOrders()" class="previous-orders-section">
+    <div class="section-header">
+      <ion-icon name="receipt-outline" class="section-icon"></ion-icon>
+      <h2 class="section-title">{{ 'CART.PREVIOUS_ORDERS' | translate }}</h2>
+    </div>
+
+    <ion-card *ngFor="let order of previousOrders" class="previous-order-card">
+      <ion-card-header>
+        <div class="order-header">
+          <div class="order-info">
+            <ion-card-subtitle>{{ order.orderNumber }}</ion-card-subtitle>
+            <ion-card-title class="order-time">{{ getOrderTime(order) }}</ion-card-title>
+          </div>
+          <ion-badge [color]="getStatusColor(order.status)">
+            {{ formatStatus(order.status) }}
+          </ion-badge>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="order-items" *ngIf="order.orderItems && order.orderItems.length > 0">
+          <div *ngFor="let item of order.orderItems" class="order-item-row">
+            <span class="item-quantity">{{ item.quantity }}x</span>
+            <span class="item-name">{{ item.menuItem?.name || 'Unknown Item' }}</span>
+            <span class="item-total">${{ item.subtotal?.toFixed(2) }}</span>
           </div>
         </div>
-      </ion-item>
-
-      <!-- Swipe to Delete -->
-      <ion-item-options side="end">
-        <ion-item-option color="danger" (click)="removeItem(item)">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
-    </ion-item-sliding>
-  </ion-list>
-
-  <!-- Cart Summary -->
-  <div *ngIf="!isCartEmpty()" class="cart-summary">
-    <ion-card>
-      <ion-card-content>
-        <div class="summary-row">
-          <span class="summary-label">{{ 'CART.SUBTOTAL' | translate }}</span>
-          <span class="summary-value">${{ cartSummary.subtotal.toFixed(2) }}</span>
+        <div class="order-total">
+          <span class="total-label">{{ 'CART.ORDER_TOTAL' | translate }}:</span>
+          <span class="total-value">${{ order.total?.toFixed(2) }}</span>
         </div>
-        <div class="summary-row">
-          <span class="summary-label">{{ 'CART.TAX' | translate }} (8%)</span>
-          <span class="summary-value">${{ cartSummary.tax.toFixed(2) }}</span>
-        </div>
-        <ion-item lines="none" class="summary-total">
-          <ion-label>
-            <h2>{{ 'CART.TOTAL' | translate }}</h2>
-          </ion-label>
-          <ion-note slot="end" class="total-amount">${{ cartSummary.total.toFixed(2) }}</ion-note>
-        </ion-item>
       </ion-card-content>
     </ion-card>
+
+    <!-- Loading Indicator -->
+    <div *ngIf="isLoadingOrders" class="loading-container">
+      <ion-spinner></ion-spinner>
+      <p>{{ 'CART.LOADING_ORDERS' | translate }}</p>
+    </div>
+
+    <!-- Grand Total Summary -->
+    <ion-card *ngIf="!isLoadingOrders" class="grand-total-card">
+      <ion-card-content>
+        <div class="grand-total-header">
+          <ion-icon name="calculator-outline"></ion-icon>
+          <h3>{{ 'CART.SESSION_SUMMARY' | translate }}</h3>
+        </div>
+        <div class="grand-total-row">
+          <span class="grand-total-label">{{ 'CART.TOTAL_ORDERS' | translate }}:</span>
+          <span class="grand-total-value">{{ previousOrders.length }}</span>
+        </div>
+        <div class="grand-total-row">
+          <span class="grand-total-label">{{ 'CART.TOTAL_ITEMS' | translate }}:</span>
+          <span class="grand-total-value">{{ getTotalItemsCount() }}</span>
+        </div>
+        <div class="grand-total-divider"></div>
+        <div class="grand-total-final">
+          <span class="grand-total-final-label">{{ 'CART.GRAND_TOTAL' | translate }}:</span>
+          <span class="grand-total-final-value">${{ getGrandTotal().toFixed(2) }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Empty State for Cart with Previous Orders -->
+    <div *ngIf="isCartEmpty() && !isLoadingOrders" class="empty-cart-with-history">
+      <p>{{ 'CART.CONTINUE_SHOPPING' | translate }}</p>
+      <ion-button expand="block" fill="outline" (click)="goBack()">
+        {{ 'CART.ADD_MORE_ITEMS' | translate }}
+      </ion-button>
+    </div>
   </div>
 </ion-content>
 

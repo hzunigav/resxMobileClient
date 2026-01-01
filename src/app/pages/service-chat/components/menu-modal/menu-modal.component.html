@@ -29,7 +29,7 @@
   <div *ngIf="!isLoading && filteredItems.length > 0" class="menu-grid">
     <div *ngFor="let item of filteredItems" class="menu-item-card">
       <div class="item-image" *ngIf="hasValidImageUrl(item)">
-        <img [src]="item.imageUrl" [alt]="item.name" />
+        <img [src]="getImageUrl(item)" [alt]="item.name" />
       </div>
       <div class="item-image placeholder" *ngIf="!hasValidImageUrl(item)">
         <ion-icon name="restaurant"></ion-icon>

@@ -11,6 +11,8 @@ const routes: Routes = [
   { path: 'tabs', loadChildren: () => import('./pages/tabs/tabs.module').then(m => m.TabsPageModule) },
   { path: 'login', loadChildren: () => import('./pages/login/login.module').then(m => m.LoginPageModule) },
   { path: 'signup', loadChildren: () => import('./pages/signup/signup.module').then(m => m.SignupPageModule) },
+  { path: 'check/:id', loadComponent: () => import('./pages/check/check.page').then(m => m.CheckPage) },
+  { path: 'service-detail/:id', loadComponent: () => import('./pages/service-detail/service-detail.page').then(m => m.ServiceDetailPage) },
   { path: 'accessdenied', redirectTo: 'auth', pathMatch: 'full' },
 ];
 @NgModule({

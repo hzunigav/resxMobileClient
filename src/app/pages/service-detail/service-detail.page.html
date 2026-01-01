@@ -1,0 +1,122 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()">
+        <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Service Details</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="flex items-center justify-center h-full">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="!loading && error" class="p-4">
+    <ion-card class="error-card">
+      <ion-card-content>
+        <div class="flex items-center gap-3 text-red-600">
+          <ion-icon name="alert-circle" class="text-2xl"></ion-icon>
+          <p class="m-0">{{ error }}</p>
+        </div>
+        <ion-button expand="block" (click)="loadServiceDetails()" class="mt-4">
+          Try Again
+        </ion-button>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!loading && !error" class="p-4">
+    <!-- Service Info Card -->
+    <ion-card class="info-card mb-4">
+      <ion-card-header>
+        <ion-card-title>Service #{{ serviceId }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <ion-icon name="receipt" class="text-xl text-gray-600"></ion-icon>
+            <span class="text-gray-700">Total Orders:</span>
+          </div>
+          <span class="font-semibold text-lg">{{ orders.length }}</span>
+        </div>
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <ion-icon name="checkmark-circle" class="text-xl text-green-600"></ion-icon>
+            <span class="text-gray-700">Delivered:</span>
+          </div>
+          <span class="font-semibold text-lg text-green-600">{{ deliveredOrdersCount }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <ion-icon name="cash" class="text-xl text-blue-600"></ion-icon>
+            <span class="text-gray-700">Total Bill:</span>
+          </div>
+          <span class="font-bold text-xl text-blue-600">${{ totalBillPreview.toFixed(2) }}</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Orders List -->
+    <ion-card *ngIf="orders.length > 0">
+      <ion-card-header>
+        <ion-card-title class="text-base">Orders</ion-card-title>
+      </ion-card-header>
+      <ion-list class="ion-no-padding">
+        <ion-item *ngFor="let order of orders" [button]="false">
+          <div class="w-full py-2">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-medium text-gray-800">{{ order.orderNumber }}</span>
+              <ion-badge [color]="getStatusColor(order.status)">
+                {{ order.status }}
+              </ion-badge>
+            </div>
+            <div class="flex justify-between text-sm text-gray-600">
+              <span>{{ order.items?.length || 0 }} items</span>
+              <span class="font-semibold">${{ order.total?.toFixed(2) }}</span>
+            </div>
+          </div>
+        </ion-item>
+      </ion-list>
+    </ion-card>
+
+    <!-- Empty State -->
+    <ion-card *ngIf="orders.length === 0" class="text-center">
+      <ion-card-content>
+        <ion-icon name="file-tray" class="text-6xl text-gray-400 mb-3"></ion-icon>
+        <p class="text-gray-600">No orders for this service yet</p>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Warning -->
+    <ion-card *ngIf="deliveredOrdersCount === 0" class="warning-card">
+      <ion-card-content>
+        <div class="flex items-start gap-3">
+          <ion-icon name="warning" class="text-2xl text-orange-600 flex-shrink-0"></ion-icon>
+          <p class="m-0 text-sm text-gray-700">
+            At least one order must be delivered before you can close the service.
+          </p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+
+  <!-- Floating Action Button -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed" *ngIf="!loading && !error">
+    <ion-fab-button
+      color="success"
+      [disabled]="!canCloseService"
+      (click)="presentCloseConfirmation()">
+      <ion-icon name="checkmark-done"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
